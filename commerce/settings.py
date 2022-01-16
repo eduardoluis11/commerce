@@ -83,6 +83,14 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'auctions.User'
 
+""" In newer versions of Django and Python, I get an error if my models 
+don't have any primary keys by default (which is the case for this homework assignment.)
+Therefore, I need to add this to give this web app a default primary key
+and avoid any error messages while registering users (source: Nuts' reply
+from https://stackoverflow.com/questions/66971594/auto-create-primary-key-used-when-not-defining-a-primary-key-type-warning-in-dja)I 
+"""
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
