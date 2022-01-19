@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+class User(AbstractUser):
+    pass
+
 """ First of all, I’m getting an error saying that the table auctions_user doesn’t even exist. So, if I try to 
 register a user or create a super user for the admin panel, I will get a Django error message.
 
@@ -31,12 +34,119 @@ settings.py file) while typing the command “makemigrations”. That is, I need
 https://stackoverflow.com/questions/32518804/django-makemigrations-not-detecting-new-model  .) 
 Also, since my database had bugs, I needed to delete the database, and then run “makemigrations” to recreate it. 
 Otherwise, I would get an error message while executing the “migrate” command to apply the changes to the database.
+
+1.a) Listings:
+
+For the listings model, I need the following fields: the username of the seller, the name of the product, the initial 
+bid or initial price of the product, description of the product, date and time when the listing was created, URL of 
+the image of the product (I will use only 1 image to make the homework assignment easier), and the auction category 
+(like “video games” or “music”). Out of those 7 fields, only the username of the seller will be a foreign key, so I 
+don’t have to add a character limit to that particular field. I will take the username from the “User” model.
+
+Next, I will have to decide the character limit for each of the 6 remaining fields that aren’t foreign keys. 
+
+For the description of the listing, I decided to first check what was the character limit for a listing description in 
+eBay. It turns out that eBay allows you to put descriptions of up to 4000 characters (source: 
+https://developer.ebay.com/devzone/merchant-products/catalog-best-practices/content/descriptions.html .) So, I could 
+put a similar character limit for the listing descriptions of my web app. In my case, to make it a bit more original, 
+I will put a character limit of up to 4500 characters for the listing descriptions in my app.
+
+Next, for the comments, I decided that, instead of giving the user the option of posting questions or reviews, I will 
+let them post comments in listings as if the listings were posts in social media or entries in a blog. That is, anyone 
+can comment on a listing. I decided this since the assignment never said that I should put a question section to the 
+listing. Also, reviews should only be able to be posted by people who had bought that particular product to that 
+particular seller. So, to make this assignment easier, and since it doesn’t say otherwise, I will let any user 
+comment anything on any listing.
+
+Since comments on a listing in my web app will be the equivalent of comments in a blog entry, I decided to look up 
+Wordpress’ character limit for comments, since Wordpress is commonly used for creating blogs. Turns out that you can 
+decide the character limit. However, according to a website I visited, comments in Wordpress sites should ideally be of 
+up to 5000 characters (source: https://www.wpbeginner.com/wp-tutorials/how-to-limit-comment-length-in-wordpress/ .) 
+So, by following this guideline, I decided that the character limit for comments on the listings in my app will be 
+5000 characters.
+
+Next, I checked an ideal character limit for URLs for the field that will store the URLs for the pictures. It seems 
+that browsers such as Google Chrome can store URLs of up to 2048 characters (source: 
+https://www.geeksforgeeks.org/maximum-length-of-a-url-in-different-browsers/ .) Therefore, I will give the “URL” field 
+a limit of up to 2048 characters. 
+
+For the rest of the fields, I will give them a random and relatively low number of characters as a character limit. 
+For things like the title, I could give it a limit of between 200 and 300 characters. Or, I could use a limit of 64 
+characters, like Brian did in this assignment’s lecture. I will only use the 64 character limit for the category. 
+For the name of the product, I will put a limit of 128 characters (64 times two) since I think I’ve seen products on 
+Amazon with titles longer than 64 characters.
+
+For the initial price and the date and time when the listing was created, I will use the data type “Numeric”. It 
+doesn’t make sense to store the date and time as an integer. As for the price, it will have decimals to indicate the 
+cents of the price. So, once again, I can’t use integers. As far as I’m aware, I don’t have to specify a limit for 
+“Numeric” data types.
+
+Now, for the foreign key, I wanted to know how to import a foreign key in a model. Turns out that I need to use a 
+function that has this syntax: “models.ForeignKey(foreign_key_field)" (source: felix001’s question on  
+https://stackoverflow.com/questions/14663523/foreign-key-django-model .)
+
+It would be best to first create the listing model before creating the bid and the comment ones, since the bid and 
+comment models will directly depend on the Listing model, that is, I will use foreign keys to connect the Listing 
+model to the Comment and the Bid ones.
+
+Also, I will create a 4th model which will store the users’ watchlists. 
+
+Since there isn’t “Numeric” as a model function in Django, I will have to use other data types to store the date of 
+creation of the listing and the initial price. I will use “DateTimeField” to store the date and time, and 
+“DecimalField” to store the initial price (source: https://docs.djangoproject.com/en/3.0/ref/models/fields/ .)
+
+It turns out that, if I want to use DecimalField to store numbers, I need to specify the limit for the number of 
+digits. In fact, I need to specify at least 2 arguments: the total digit size, and the decimal size. I want the decimal 
+part to have a limit of 2 digits, since prices only have 2 decimals. However, I don’t want the prices in general to 
+have a limit, so users can put bids of millions of dollars if they so desire. So, to do that, I will put the following 
+parameters: max_digits=None, decimal_places=2 (source: https://www.geeksforgeeks.org/decimalfield-django-models/ .)
+In the end, I got a bug telling me that I need to specify a limit to the number of digits for the price (it can't be
+"None"). So, I added a limit of 12 digits: 10 for the "integer" part, and 2 decimal places. This way, sellers can 
+set a price of up to $9,999,999,999,99 (or around 9 billion dollars.)
+
+After further consideration, I won’t store the username of the seller into the “Listings” model. Instead, I will store 
+the ID code assigned to them by the User model. That is, I will import the primary key of that seller from the User 
+model. I will import it as a foreign key. It’s more efficient that way. I don’t have to store the username of the 
+seller in “Listings” if it’s already being stored in “User”. I need to specify the property “CASCADE” if I delete the 
+user’s ID code, since, otherwise, if a user creates a listing and I attempt to delete that user’s account, I will get 
+an error message and I won’t be able to delete their account. I could call the field “seller_id”. I will rewatch 
+Brian’s lecture to check how to assign “CASCADE” if I delete a field from a model in Django. After watching it, I see 
+that I need to use “on_delete=models.CASCADE” as the 2nd argument of the ForeignKey() function.
+
+As far as I understand, a foreign key is the primary key of the table that I’m importing data from. So, since the PK 
+of the auction_user table is “id” (the ID code), the only thing that I will get from using the ForeignKey() function 
+from the auction_user table is the ID code. I just have to specify the table’s name while calling ForeignKey() (or 
+more specifically, the model’s name) as the 1st argument. Also, the ForeignKey() function is only used in one-to-many 
+relationships (which is the case between the users and their respective listings.)
+
+With regards to the relationship between the auction_listings and the auction_user tables, they will have a 
+“one-to-many” relationship. That is because, even though 1 user can have multiple listings to sell different kinds of 
+products, a listing should ONLY be able to be created by 1 specific user. So, I won’t use a many-to-many relationship.
+
+I will set up a related name for the relationship between the sellers and their respective listings in case I want to 
+know all of the products sold by that particular seller. This will be the third parameter of the ForeignKey() function 
+for the Listing model. I will call it “list_of_products”.
+
+For the date and time (or timestamp), I only want to store the date and time when the listing was created. I’m not 
+interested at the moment to store the time when the listing gets modified in case the seller decides to modify it. So, 
+the proper argument that I may need to use is “.auto_now_add” (source: 
+https://docs.djangoproject.com/en/4.0/ref/models/fields/ .) More specifically, I need to type it the following way:
+models.DateTimeField().auto_now_add (source: https://www.geeksforgeeks.org/datetimefield-django-models/ .)
+
+Due to a bug that was showing up telling me that I couldn't create the Listing model if the fields didn't have 
+a default value, I added a default value to all of the fields.
 """
 class Listings(models.Model):
-    description = models.CharField(max_length=255)
+    seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
+    product_name = models.CharField(max_length=128, default='Product Name')
+    description = models.CharField(max_length=4500, default='')
+    picture_url = models.CharField(max_length=2048, default='')
+    initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    created_on = models.DateTimeField().auto_now_add
+    category = models.CharField(max_length=64, default='None')
 
 
-class User(AbstractUser):
-    pass
+
+
 
 
