@@ -135,6 +135,13 @@ models.DateTimeField().auto_now_add (source: https://www.geeksforgeeks.org/datet
 
 Due to a bug that was showing up telling me that I couldn't create the Listing model if the fields didn't have 
 a default value, I added a default value to all of the fields.
+
+For the timestamp, I decided to forget about storing the current date and time here in models.py. I will only call 
+DatetimeField() with some generic default value. Then ,on the form page, I will execute a SQL statement saying “insert 
+today’s date in created_on (by using a function such as datetime.now())” (source:  Houman’s question on 
+https://stackoverflow.com/questions/12030187/how-do-i-get-the-current-date-and-current-time-only-respectively-in-django 
+.) For  the default value for the timestamp, I will use the following syntax for the date and time: '2022-1-1 1:00:00' 
+(source: https://www.geeksforgeeks.org/datetimefield-django-forms/ .) 
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -142,7 +149,7 @@ class Listings(models.Model):
     description = models.CharField(max_length=4500, default='')
     picture_url = models.CharField(max_length=2048, default='')
     initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    created_on = models.DateTimeField().auto_now_add
+    created_on = models.DateTimeField(default='2022-01-01 1:00:00')
     category = models.CharField(max_length=64, default='None')
 
 
