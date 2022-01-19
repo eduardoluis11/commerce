@@ -228,4 +228,35 @@ decide the character limit. However, according to a website I visited, comments 
 of up to 5000 characters (source: https://www.wpbeginner.com/wp-tutorials/how-to-limit-comment-length-in-wordpress/ .) 
 So, by following this guideline, I decided that the character limit for comments on the listings in my app will be 5000 
 characters.
+
+I will let any user comment in any listing, whether they have placed any bids or bought anything or not.
+
+Since one user can comment on multiple listings, and a single listing can have multiple comments, there is a 
+many-to-many relationship between comments and users. Not only sellers will be able to comment, but buyers as well. I 
+want to display the username of buyers and/or sellers on the comments, so I decided that I will add a field that stores 
+the ID code of the people who comment. This is done with the ManyToManyField() function.
+
+After further consideration, I realized that the above statement is incorrect. One user may be able to make many 
+comments, but one specific comment can only belong to one specific user. So, there’s a one-to-many relationship between 
+comments and users.
+
+Also, there will be a relationship between comments and listings. This is done so that comments are actually printed on 
+the proper listing. Since 1 listing can have multiple comments, but one specific comment can only belong to one 
+specific listing, then there’s also a one-to-many relationship between comments and listings.
+
+Therefore, for both the relationship between comments and listings, and the relationship between comments and users, 
+I will use the ForeignKey() function.
+
+So far, the main fields for the Comments table will be the following:
+    1-) The comment itself.
+    2-) The ID of the user who made the comment.
+    3-) The ID of the listing where the comment was posted to.
+
+Now, I have to decide the character limit for the fields for the Comments model. The only field to which I can assign 
+a character limit is the comment itself. As I already specified above, the character limit for comments will be 5000 
+characters.
 """
+class Comments(models.Model):
+    comment = models.CharField(max_length=5000, default='')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments_from_user", default=0)
+    listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="comments_from_listing", default=0)
