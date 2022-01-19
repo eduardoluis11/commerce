@@ -153,7 +153,67 @@ class Listings(models.Model):
     category = models.CharField(max_length=64, default='None')
 
 
+""" 1.b) Bids:
 
+The three main fields that the Bids model will have will be the following:
+    1-) The Listing table’s PK (via a “Foreign key” ** from Listings.)
+    2-) The bid made by the buyers.
+    3-) The buyer’s name or PK (via a “Foreign key” ** from User.)
 
+** The reason I put “Foreign Key” between quotation marks is because I will need a many-to-many relationship between 
+the bids and the listings (that is, between the Listing and the Bid models.) Foreign keys are for one-to-many 
+relationships. So, I can’t use foreign keys in here. I will have to use the ManyToMany() function to import the 
+Listing table’s PK. I need to rewatch Brian’s lecture to see how he used the Many-to-Many() function.
 
+I will use a many-to-many relationship between the listings and the bids since one buyer can bid in multiple listings 
+(to buy multiple products), and one listing can have many bidders (in fact, the bidder who offers the highest amount 
+of money wins the auction.) So, using a one-to-many relationship for this case would be inappropriate.
 
+After watching Brian’s lecture, I think I see how to call the ManyToManyField() function. To make the call to the 
+ManyToMany() function, I need to use syntax like the following: “models.ManyToManyField(table_that_I_want_to_import, 
+blank=True or False, related_name=’easy to remember name’)”. In my particular case, I want “blank” to be True in order 
+to allow the listing to have 0 bidders (if nobody has yet put a bid on that product.) As for “related_name”, I want 
+an easy to remember name so that I can make a reverse search if I have the listing or the buyer’s ID, but I want to 
+search for all of the bids made by that person.
+
+I will re-read the assignment to see what I need to store in the “Bids” model. Do I need to store all of the buyers’ 
+information, or do I need to store how many bidders want to buy a product in a particular listing? Since it’s 
+pointless to make separate tables for buyers and sellers since all of the info for all of the users are being stored 
+into the Users model. So, I will store how many bidders want to buy a specific product for a specific listing. 
+
+Even so, the relationship is kept as a many-to-many relationship, since one bidder could bid for multiple products at 
+the same time, and one product can have multiple bidders.
+    
+Another thing that I may need to store in the “Bids” model is the winner of the auction, or, at the very least, 
+store who the highest bidder is for a particular listing. So, I would have 4 fields in total: 1) PK of the bidder, 
+2) bid of the buyer, 3) PK of the listing, and 4) the highest bid (that is, the highest amount of money offered .) 
+
+I may choose between storing ALL of the bids made for 1 particular listing in the Bids table. However, the most 
+important bid is the one made by the bidder who’s offering the highest amount of money. The amount of money of the 
+highest bid should be the one being displayed on the website.
+    
+I think that the Bids model will basically be an intermediate table that will connect the users with the listings. 
+That is, it will be comprised of mainly PKs of “foreign keys”. It will connect buyers with listings.
+
+After further consideration, due to the use of “foreign keys”, I think that no entry on the Bids table could be NULL 
+(or empty). Even the amount of money being offered by each person and the highest bid made will have to have a value 
+other than NULL. It can’t be empty. So, I will give them all a generic default value, but I won’t use the 
+“blank=True” property.
+
+I could put extra restrictions (either here or further in the assignment) to specify that the bid cannot be lower 
+than the product’s initial price set by the seller.
+
+Now, I need to think about the character limits that I need to put on the bids and the highest bid for a particular 
+listing. They will have the exact same restrictions as the one that I gave to the initial price set by the seller to 
+a listing. That is, it will be a decimal field with up to 2 decimals, and it will have a total of 12 digits (10 
+“integer” digits, and 2 decimals.)
+
+Upon further consideration, do I really need to store the current highest bid for a listing? I could simply use an SQL 
+statement to look for all of the bids, and only show the highest bid made using an SQL filter such as “Max”. Then, I 
+would print that in the listing page. There’s no need to add a field to store the current highest bid. So, I will only 
+leave the initial 3 fields for the Bids model.  
+"""
+class Bids(models.Model):
+    listing = models.ManyToManyField(Listings, related_name='bids_from_listing')
+    buyer = models.ManyToManyField(User, related_name='bids_from_user')
+    bid = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
