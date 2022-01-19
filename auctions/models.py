@@ -135,6 +135,20 @@ today’s date in created_on (by using a function such as datetime.now())” (so
 https://stackoverflow.com/questions/12030187/how-do-i-get-the-current-date-and-current-time-only-respectively-in-django 
 .) For  the default value for the timestamp, I will use the following syntax for the date and time: '2022-1-1 1:00:00' 
 (source: https://www.geeksforgeeks.org/datetimefield-django-forms/ .) 
+
+I will add an extra field to the Listings model. I will store whether the listing is active or not. I don’t want to 
+delete listings as soon as someone purchases that specific product. I want that listing to be archived, so that the 
+seller of that listing is able to modify (or delete) that listing, or it at least remains archived in the web app. 
+However, I don’t want anyone but the seller to access that inactive listing. I only want the active listings to be 
+rendered to everyone on the website. So, to achieve this, I need to add an extra attribute to the listings table, 
+which could be called “Active”, and could have values such as “True” or “False”.
+
+Then, so that the inactive listings don’t show up to users when entering the website, I will execute an SQL query that 
+says something like “SELECT * … WHERE active = True”.
+
+Turns out that Django accepts boolean fields in its models. The field is called BooleanField() (source: 
+https://docs.djangoproject.com/en/4.0/ref/models/fields/ .) So, I could add the field like this: 
+models.BooleanField(default=”False”).
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -144,6 +158,7 @@ class Listings(models.Model):
     initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     created_on = models.DateTimeField(default='2022-01-01 1:00:00')
     category = models.CharField(max_length=64, default='None')
+    active = models.BooleanField(default=False)
 
 
 """ 1.b) Bids:
@@ -206,7 +221,7 @@ statement to look for all of the bids, and only show the highest bid made using 
 would print that in the listing page. There’s no need to add a field to store the current highest bid. So, I will only 
 leave the initial 3 fields for the Bids model.
 
-After furhter consideration, I realized a mistake in the relationships. There isn't a single many-to-many relationship 
+After further consideration, I realized a mistake in the relationships. There isn't a single many-to-many relationship 
 in the Bids model. For the relationship between bids and listings, a listing could have multiple bids, but one specific 
 bid can only belong to one specific listing. So, there was a one-to-many relationship between listings and bids. And 
 something similar occurs between users and and bids: one user can make multiple bids, but one specific bid can only 
