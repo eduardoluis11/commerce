@@ -275,3 +275,39 @@ class Comments(models.Model):
     comment = models.CharField(max_length=5000, default='')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments_from_user", default=0)
     listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="comments_from_listing", default=0)
+
+
+""" 1.d) Watchlist:
+
+I decided to create an optional 4th model, which in this case will be used for storing watchlists. Here, I will store 
+the wish lists of each user (if they decide to store a product or listing into a wish list.)
+
+The fields that I would need for the watch list would be the following:
+    1-) The user’s PK.
+    2-) The listing’s PK.
+    3.-) The listing’s URL to its store page.
+
+I need the URL of that product’s page since I will need to call it so that I can create a link to that listing. Then, 
+if the user clicks on that link, they will be able to enter into that listing’s page.
+
+Now, I need to check the relationships between the watchlist and the users, and between the watchlist and the listings. 
+One user can only have 1 watchlist, but many users can have their own watchlist. But the thing is that, I’m not storing 
+watchlists: I’m storing URLs. So, one user can store many URLS, and the same URL can belong to many different users. 
+So, there’s a many-to-many relationship between the listing URLs and the users. Now, between the product URLs and the 
+products themselves, a specific listing can have only one specific URL, and a specific URL can only have one product 
+associated with it. So, there’s a one-to-one relationship between listings and their respective URLs. It turns out that 
+Django has a form field for one-to-one relationships, which is the OneToOneField() function (source: 
+https://docs.djangoproject.com/en/4.0/ref/models/fields/ .) I need to specify “on delete cascade”, and it’s recommended 
+that I specify a related_name attribute. So, I need to use syntax like the following: 
+models.OneToOneField(table_that_I_want_to_import, on_delete=models.CASCADE, related_name="some_name", 
+default=”default_value”) . 
+
+For the many-to-many relationship between users and URLs, I will need to use the ManyToManyField(). Since a user could 
+have an empty watchlist (if they decide to not to add anything to a wishlist), I will use the “blank=true” property of 
+the ManyToManyField(). The syntax could be like the following: models.ManyToManyField(table_that_I_want_to_import, 
+blank=True, related_name=’some_name’) .
+"""
+class Watchlists(models.Model):
+    listing_url = models.CharField(max_length=2048, default='')
+    user = models.ManyToManyField(User, blank=True, related_name='watchlist_from_user')
+    listing = models.OneToOneField(Listings, on_delete=models.CASCADE, related_name="URL_from_listing", default=0)
