@@ -4,6 +4,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+""" This will let me use the "@login_required" attribute (source: 
+https://docs.djangoproject.com/en/4.0/topics/auth/default/#the-login-required-decorator )
+"""
+from django.contrib.auth.decorators import login_required
+
 from .models import User
 
 
@@ -86,5 +91,6 @@ page, I will use the following snippet: return render(request, "auctions/create.
 
 Next, I would need to edit the urls.py file to add the path towards the “/create” URL.
 """
+@login_required
 def create(request):
     return render(request, "auctions/create.html")
