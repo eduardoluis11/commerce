@@ -21,6 +21,12 @@
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
             {% if user.is_authenticated %}
+
+                <!-- This will send the user to the page that will let them create a new listing. It will only
+                 render if the user is logged in. -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create' %}">Create New Listing</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                 </li>
