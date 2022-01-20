@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/4.0/topics/auth/default/#the-login-required-de
 """
 from django.contrib.auth.decorators import login_required
 
+"""  This will let me use the Django form for creating listings, which is on the forms.py file (source: 
+https://docs.djangoproject.com/en/4.0/topics/forms/ )
+"""
+from .forms import CreateListingForm
+
 from .models import User
 
 
@@ -90,7 +95,18 @@ I will call the function “create(request)”. I won’t check for POST request
 page, I will use the following snippet: return render(request, "auctions/create.html") .
 
 Next, I would need to edit the urls.py file to add the path towards the “/create” URL.
+
+Then, in the views.py file, to render the form (if the user has just entered the page), I will have to first import 
+that form. That’s done using “from .forms import NameOfTheForm”. Then, within the view() function, I need to add a 
+variable, and make that variable equal to “NameOfTheForm()” (source: 
+https://docs.djangoproject.com/en/4.0/topics/forms/ .) Finally, I will send that form to create.html using jinja 
+notation. To do that, I will have to put that variable inside the “return render request()” function, by using the 
+following syntax: {“form_variable”: form_variable}. Then, I need to call that variable via Jinja notation in 
+create.html.
 """
 @login_required
 def create(request):
-    return render(request, "auctions/create.html")
+    form = CreateListingForm()
+    return render(request, "auctions/create.html", {
+        "form": form
+    })
