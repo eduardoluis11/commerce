@@ -149,6 +149,12 @@ says something like “SELECT * … WHERE active = True”.
 Turns out that Django accepts boolean fields in its models. The field is called BooleanField() (source: 
 https://docs.djangoproject.com/en/4.0/ref/models/fields/ .) So, I could add the field like this: 
 models.BooleanField(default=”False”).
+
+I will use the “__str__” notation for each class in the models.py file so that, when I use a “SELECT ALL” using 
+Django’s API for working with databases, I get the name of each field for that table instead of getting 
+“<querySet(number)>”. This way, it will be much easier to work with my database. After re-watching Brian’s lecture, it 
+seems that the syntax that I need to use is the following: ‘def __str__(self): return f”{self.id}: {self.first_field} 
+to {self.last_field}” ’. That must be just below the last field of the class in the model.
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -159,6 +165,9 @@ class Listings(models.Model):
     created_on = models.DateTimeField(default='2022-01-01 1:00:00')
     category = models.CharField(max_length=64, default='None')
     active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.id}: {self.seller_id} to {self.active}"
 
 
 """ 1.b) Bids:
