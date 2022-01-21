@@ -16,6 +16,8 @@ from .forms import CreateListingForm
 
 from .models import User
 
+# This will import the Listings table from the models.py file
+from .models import Listings
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -103,10 +105,16 @@ https://docs.djangoproject.com/en/4.0/topics/forms/ .) Finally, I will send that
 notation. To do that, I will have to put that variable inside the “return render request()” function, by using the 
 following syntax: {“form_variable”: form_variable}. Then, I need to call that variable via Jinja notation in 
 create.html.
+
+I will add some debugging code to print the data stored in the Listings table from the database into the /create 
+page. I will do that just to learn how to print data from the database into the website. To do that, in the create() 
+view, I will add Django’s Query Set notation into a variable. Then, I will send that variable to the /create page via 
+Jinja notation. The syntax that I should use will be something like: “ “variable_name”: Model_name.objects.all() .”
 """
 @login_required
 def create(request):
     form = CreateListingForm()
     return render(request, "auctions/create.html", {
-        "form": form
+        "form": form,
+        "listings": Listings.objects.all()
     })
