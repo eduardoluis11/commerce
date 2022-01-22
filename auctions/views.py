@@ -110,11 +110,71 @@ I will add some debugging code to print the data stored in the Listings table fr
 page. I will do that just to learn how to print data from the database into the website. To do that, in the create() 
 view, I will add Django’s Query Set notation into a variable. Then, I will send that variable to the /create page via 
 Jinja notation. The syntax that I should use will be something like: “ “variable_name”: Model_name.objects.all() .”
+
+I will now proceed to insert the data from the form’s inputs from the create page into the database. To do that, I 
+will obtain the data from the POST request from the /create page, and I will insert it into an “if” statement. I will 
+insert all of that data into multiple variables. Then, I will insert those variables into the different fields of the 
+Listings table in the database. But, to do that, I need to obtain the ID number from the user that’s currently logged 
+in, so that the listing is created for that specific user.
+
+The data from the user that’s currently logged in is stored into the request of the different views functions, and I 
+can access it by using the following snippet: “request.user” (source: K Z’s answer from 
+https://stackoverflow.com/questions/12615154/how-to-get-the-currently-logged-in-users-user-id-in-django . So, if I 
+use something like “logged_user = request.user” to store all of the data from the logged in user, I can access their 
+PK by using the following snippet: “logged_user_id = logged_user.id”.)
+
+To get data from an input via a POST request from a form in a view() with an “if” statement, I need to use the 
+following syntax in the view(): to check if a POST request was made: " if request.method == "POST":  " (source: 
+Brian’s lecture for this assignment). Then, to insert the data from the form into a variable in the view(), I need to 
+use the following syntax: " request.POST["input_name"]  ", and I need to insert that into a variable.  
+
+Now, to insert the data from that form into my database, I will need to use Django’s Query Set syntax. The syntax that 
+I will need to use will be: " table.field.add(variable_with_input_data) ".That will add a row, that is, an entry, 
+into that table in my database. The problem is that I don’t want to add just one field into that row. I want to add 
+like 7 or 8 fields within that same row, that is, within that same listing. So, I think I will have to use the “ 
+variable.save() ” syntax that Brian used when he was explaining how to use the Query Set syntax on the Python shell.
+
+The Query Set syntax that I will use to insert the 3 fields of the form, as well as all of the other remaining 4 or 5 
+fields into a single listing in the Listings table in the database, I will use syntax like the following: 
+new_listing = Listings(seller_id=logged_user_id, product_name=product_name_variable_from_input, 
+description=description_variable, initial_price=price_variable, …, active=True). Then, to save that into the database, 
+I’ll need to use the following syntax: “ new_listing.save() ”.
+
+To insert the PK of a user, I need to get an instance of the User table, or I’ll get an error when trying to execute 
+the Query Set syntax. To get an instance of the User table, I need to use the following syntax: “ 
+user = User.objects.get(id=id_number_from_user) “ (source: JamesO’s answer from 
+https://stackoverflow.com/questions/9616569/django-cannot-assign-u1-staffprofile-user-must-be-a-user-instance .)
 """
 @login_required
 def create(request):
-    form = CreateListingForm()
-    return render(request, "auctions/create.html", {
-        "form": form,
-        "listings": Listings.objects.all()
-    })
+    form = CreateListingForm()  # Form from forms.py to create a new listing
+
+    logged_user = request.user      # This stored the data from the currently logged in user
+    logged_user_id = logged_user.id     # PK of the currently logged in user
+
+    # This creates an instance of the User table, which I'll need to use in the Query Set syntax
+    user_instance = User.objects.get(id=logged_user_id)
+
+
+    if request.method == "POST":
+        listing_title = request.POST["listing_title"]
+        starting_bid = request.POST["starting_bid"]
+        description = request.POST["description"]
+
+        # This prepares the new listing data before inserting it into the database
+        new_listing = Listings(seller_id=user_instance, product_name=listing_title,
+                               description=description, initial_price=starting_bid, active = True)
+
+        # This inserts the new listing into the database
+        new_listing.save()
+
+        return render(request, "auctions/create.html", {
+            "form": form,
+            "listings": Listings.objects.all()
+        })
+
+    else:
+        return render(request, "auctions/create.html", {
+            "form": form,
+            "listings": Listings.objects.all()
+        })
