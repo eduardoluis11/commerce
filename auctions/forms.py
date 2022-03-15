@@ -84,10 +84,19 @@ is the model with the categories, which I’m importing from models.py (source: 
 https://stackoverflow.com/questions/48140291/how-to-create-a-custom-django-form-with-select-fields-from-different-models .) 
 Finally, to make it optional, I will add “required=False” as an attribute.
 
+BUG FIX: I was able to show the category names on both the dropdown list and on each entry of the database when submitting the 
+form by replacing “Categories.objects.all()” by “Categories.objects.values_list(‘category’)”, so that, instead of grabbing the 
+entire row for a specific entry of the “Categories” table, I’m only grabbing the name of the column (that is, instead of the ID
+and the category name, I’m only grabbing the category name)  (source:
+https://www.codegrepper.com/code-examples/python/django+query+select+specific+columns .)
+
+However, it seems that I now have to clean the data, since I’m getting “ (‘Gaming’,) ” or “ (‘Category_name’,) ” as the category 
+name. I need to remove the parentheses, the quotation marks, and the commas.
+
 """
 class CreateListingForm(forms.Form):
     listing_title = forms.CharField(max_length=128)
     starting_bid = forms.DecimalField(max_digits=12, decimal_places=2)
     description = forms.CharField(max_length=4500, widget=forms.Textarea)
     picture_url = forms.CharField(max_length=2048, required=False)
-    category = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False)
+    category = forms.ModelChoiceField(queryset=Categories.objects.values_list('category'), required=False)
