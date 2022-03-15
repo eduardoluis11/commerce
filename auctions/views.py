@@ -160,10 +160,12 @@ def create(request):
         listing_title = request.POST["listing_title"]
         starting_bid = request.POST["starting_bid"]
         description = request.POST["description"]
+        picture_url = request.POST["picture_url"]
 
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
-                               description=description, initial_price=starting_bid, active = True)
+                               description=description, initial_price=starting_bid, picture_url=picture_url,
+                               active = True)
 
         # This inserts the new listing into the database
         new_listing.save()
