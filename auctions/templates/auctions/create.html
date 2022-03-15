@@ -28,10 +28,10 @@
     {% for listing in listings %}
         <li>
             Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-            {{listing.active}}
+            {{listing.active}}, {{listing.picture_url}}
 
         </li>
-        <img src="{{listing.picture_url}}">
+        <img src="{{listing.picture_url}}" height="200px">
     {% endfor %}
 
 

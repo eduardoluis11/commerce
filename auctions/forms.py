@@ -57,6 +57,12 @@ to be optional.
 But, regardless of whether the picture is required or not, the picture is not being rendered. I need to check out why 
 this is happening.
 
+It’s storing the URL properly. The problem is that the image isn’t being rendered, and I don’t know why.
+
+I figured out what the problem was: I was storing the URL with the page that had the image AND some other content. 
+I wasn’t storing the URL of only the picture. I needed the URL that has only the image, not any other content nor 
+text (i.e: a URL with a “.jpg” o “.gif” ending.)
+
 """
 class CreateListingForm(forms.Form):
     listing_title = forms.CharField(max_length=128)
