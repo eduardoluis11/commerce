@@ -26,7 +26,11 @@
      NOTE: The jinja code will be executed, even if it's within an HTML comment. So, I will DELETE this
      test code and the Jinja notation once I finish this part of the assignment. -->
     {% for listing in listings %}
-        <li>Listing {{listing.id}}: {{listing.product_name}} to {{listing.active}} </li>
+        <li>
+            Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
+            {{listing.active}}
+
+        </li>
     {% endfor %}
 
 
