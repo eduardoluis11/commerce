@@ -63,9 +63,19 @@ I figured out what the problem was: I was storing the URL with the page that had
 I wasn’t storing the URL of only the picture. I needed the URL that has only the image, not any other content nor 
 text (i.e: a URL with a “.jpg” o “.gif” ending.)
 
+I think I found what I was looking for, that is, I found out how to make a specific field from a form to not to have 
+the “required” field. I need to go back to may models.py file, and, on the class with the forms, I need to create an 
+“init” function that will declare that a specific field will not have the “required” atttribute  (source: madzohan’s 
+reply from     https://stackoverflow.com/questions/16205908/django-modelform-not-required-field .)
+	
+The real solution was to put “required=False”, inside of the “forms.CharField()” parentheses for the field that stores 
+the picture URL (source: Akshar Raaj’s reply from 
+https://stackoverflow.com/questions/16205908/django-modelform-not-required-field .)
+
+
 """
 class CreateListingForm(forms.Form):
     listing_title = forms.CharField(max_length=128)
     starting_bid = forms.DecimalField(max_digits=12, decimal_places=2)
     description = forms.CharField(max_length=4500, widget=forms.Textarea)
-    picture_url = forms.CharField(max_length=2048)
+    picture_url = forms.CharField(max_length=2048, required=False)
