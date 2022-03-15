@@ -320,3 +320,19 @@ class Watchlists(models.Model):
     listing_url = models.CharField(max_length=2048, default='')
     user = models.ManyToManyField(User, blank=True, related_name='watchlist_from_user')
     listing = models.OneToOneField(Listings, on_delete=models.CASCADE, related_name="URL_from_listing", default=0)
+
+""" Now, I need to add the “Category” input, which I will make as a dropdown menu. I need to look up on w3schools how to make 
+this. In fact, I also have to look up how to make a dropdown input using Django forms.
+
+The best way to do this would be to, first, create a “Categories” model, so that I can create a table for the categories. Then, 
+I should add some entries (be it via the Python shell, or by executing SQL statements directly on the CMD on the database.) 
+The entries could be like “Fashion”, “Toys”, etc. So, to do this, I should go back to the models.py file, and I should create a
+model called “Categories”. For the time being, it will only have one field: the name of the category.
+
+Since I assigned a limit of 64 characters to the “category” field on the “Listings” model, and I really don’t think that I will 
+create a category with more than 64 characters, I will make the only field that the “Categories” model will have to also have a 
+limit of 64 characters.
+
+"""
+class Categories(models.Model):
+    category = models.CharField(max_length=64, default='None')
