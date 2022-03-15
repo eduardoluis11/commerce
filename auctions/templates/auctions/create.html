@@ -28,7 +28,7 @@
     {% for listing in listings %}
         <li>
             Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-            {{listing.active}}, {{listing.picture_url}}
+            {{listing.active}}, {{listing.picture_url}}, {{listing.category}}
 
         </li>
         <img src="{{listing.picture_url}}" height="200px">

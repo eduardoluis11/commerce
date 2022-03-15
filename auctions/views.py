@@ -16,8 +16,8 @@ from .forms import CreateListingForm
 
 from .models import User
 
-# This will import the Listings table from the models.py file
-from .models import Listings
+# This will import the Listings,Categories, and all the other tables from the models.py file
+from .models import Listings, Categories, Bids, Comments, Watchlists
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -161,11 +161,12 @@ def create(request):
         starting_bid = request.POST["starting_bid"]
         description = request.POST["description"]
         picture_url = request.POST["picture_url"]
+        category = request.POST["category"]
 
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
-                               description=description, initial_price=starting_bid, picture_url=picture_url,
-                               active = True)
+                               description=description, initial_price=starting_bid, picture_url=picture_url, 
+                               category=category, active = True)
 
         # This inserts the new listing into the database
         new_listing.save()

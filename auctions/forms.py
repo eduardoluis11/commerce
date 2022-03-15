@@ -2,6 +2,9 @@
 https://docs.djangoproject.com/en/4.0/topics/forms/) """
 from django import forms
 
+# This will import the Listings,Categories, and all the other tables from the models.py file
+from .models import Listings, Categories, Bids, Comments, Watchlists
+
 """ After reading the Django documentation on how to create Django forms, I decided to create the forms using 
 Django’s libraries and tools instead of manually writing HTML forms in layouts.html. So, to create the forms, I 
 decided to create a new file called forms.py. There, I will import the needed libraries to create forms. Then, from 
@@ -72,6 +75,14 @@ The real solution was to put “required=False”, inside of the “forms.CharFi
 the picture URL (source: Akshar Raaj’s reply from 
 https://stackoverflow.com/questions/16205908/django-modelform-not-required-field .)
 
+I already created the “Categories” model, and I added four entries to it via SQL statements (such as “Fashion” and “Gaming”).
+
+Now, I will go to my forms.py file, and I will add the optional “category” field. To make it into a <select> input, that is, 
+to make it into a dropdown menu, I will use the “forms.ModelChoiceField()” field type. Then, to select all the categories 
+from the Category table, I will use the following Query Set statement: “queryset=Categories.objects.all()”, where “Categories” 
+is the model with the categories, which I’m importing from models.py (source: tread’s reply from 
+https://stackoverflow.com/questions/48140291/how-to-create-a-custom-django-form-with-select-fields-from-different-models .) 
+Finally, to make it optional, I will add “required=False” as an attribute.
 
 """
 class CreateListingForm(forms.Form):
@@ -79,3 +90,4 @@ class CreateListingForm(forms.Form):
     starting_bid = forms.DecimalField(max_digits=12, decimal_places=2)
     description = forms.CharField(max_length=4500, widget=forms.Textarea)
     picture_url = forms.CharField(max_length=2048, required=False)
+    category = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False)
