@@ -155,6 +155,14 @@ use that variable to display that entry of the database. Now, both the dropdown 
 the proper format for the categories for the listings (source: iridescent's reply from 
 https://stackoverflow.com/questions/4300365/django-database-query-how-to-get-object-by-id .)
 
+BUG: If the user doesn’t choose a category, the category will be ‘’ (NULL), so I’ll get an error message from Django. 
+That is because I’m trying to find an entry with the ID number that is NULL or ‘’, which, of course, doesn’t exist. If 
+I fix this bug (with an “if” statement), I will finish this part of the homework.
+
+I’ll put an “if” statement saying that, if the user types “ ‘’ ” as the category, that it should insert “category” in 
+the “category_formatted” variable. Otherwise, I will use the query set statement that will look for the category name 
+whose ID is the one inserted in the form submitted by the user.
+
 """
 @login_required
 def create(request):
@@ -178,8 +186,14 @@ def create(request):
         # This removes the parentheses from the Categories entries.
         # category_formatted = category.strip('(')
 
-        # This gets a category name by its PK, which is obtained from the form
-        category_formatted = Categories.objects.get(pk=category)
+        # This checks if the user selected a category
+        if category != '':
+            # This gets a category name by its PK, which is obtained from the form
+            category_formatted = Categories.objects.get(pk=category)
+
+        # If the user didn't select a category, no category will be inserted
+        else:
+            category_formatted = category
 
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
