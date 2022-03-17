@@ -148,6 +148,13 @@ https://stackoverflow.com/questions/9616569/django-cannot-assign-u1-staffprofile
 I need to fix the formatting of the database entries from the Categories model. I will use the 
 "strip()" function (source: https://www.codegrepper.com/code-examples/python/remove+outer+quotes+from+string+python ) 
 
+BUG FIX: This fixes the issue of the category name being displayed being its ID number instead of the category.
+What I do is first, obtain the ID of the category from the Create Listing form. Then, I create a variable which will
+obtain the name of the category whose ID number is the one obtained from the Create Listing form. Finally, I 
+use that variable to display that entry of the database. Now, both the dropdown menu and the databse entry show
+the proper format for the categories for the listings (source: iridescent's reply from 
+https://stackoverflow.com/questions/4300365/django-database-query-how-to-get-object-by-id .)
+
 """
 @login_required
 def create(request):
@@ -171,10 +178,13 @@ def create(request):
         # This removes the parentheses from the Categories entries.
         # category_formatted = category.strip('(')
 
+        # This gets a category name by its PK, which is obtained from the form
+        category_formatted = Categories.objects.get(pk=category)
+
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
                                description=description, initial_price=starting_bid, picture_url=picture_url, 
-                               category=category, active = True)
+                               category=category_formatted, active = True)
 
         # This inserts the new listing into the database
         new_listing.save()
