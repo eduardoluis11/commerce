@@ -3,5 +3,37 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    <!-- 3) Active Listings Page:
+
+    The default route of your web application should let users view all of the currently active auction listings. For each
+    active listing, this page should display (at minimum) the title, description, current price, and photo (if one exists
+    for the listing).
+    Answer:
+
+    This is pretty much that, up to this point, I’ve been showing as a debugging message in the Create Listings page: each
+    listing showing their name, their photo, and their price.
+
+    What I’ll do different, however, is that I won’t show the “True” nor “False” messages, which tell me if that listing is
+    active or not. Instead, I’ll check if that listing is set to either “True” or “False” in the “Active” field. If it’s
+    set to “True”, I will display that entry in the home page when the user logs in. However, right now, I don’t have any
+    way of turning it into “False” (that should happen if, for instance, a user wins the bid and buys that product.)
+
+    DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
+    database into the /create page. I will do that just to learn how to print data from the database into the website.
+    To do that, in the create() view, I will add Django’s Query Set notation into a variable. Then, I will send that
+    variable to the /create page via Jinja notation. The syntax that I should use will be something like:
+    “ “variable_name”: Model_name.objects.all() .”
+
+     I will test printing the data from the Listings table from the database.
+
+     NOTE: The jinja code will be executed, even if it's within an HTML comment. So, I will DELETE this
+     test code and the Jinja notation once I finish this part of the assignment. -->
+    {% for listing in listings %}
+        <li>
+            Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
+            {{listing.active}}, {{listing.picture_url}}, {{listing.category}}
+
+        </li>
+        <img src="{{listing.picture_url}}" height="100px">
+    {% endfor %}
 {% endblock %}

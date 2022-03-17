@@ -19,8 +19,19 @@ from .models import User
 # This will import the Listings,Categories, and all the other tables from the models.py file
 from .models import Listings, Categories, Bids, Comments, Watchlists
 
+""" 
+I can show the active listings in the home page, regardless of whether the user has logged in or not. Remember 
+that you don’t have to be logged in in eBay in order to see a product and their price. You only need to log in to buy 
+or sell a product.
+
+I need to send all of the resulting data into index.html, NOT to create.html. I want to display the listings on 
+the home page, NOT on the page for creating a new listing. So, I’ll need to specify that on the views.py file.
+
+"""
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listings.objects.all()
+    })
 
 
 def login_view(request):

@@ -15,24 +15,7 @@
         <input type="submit" value="Submit">
     </form>
 
-    <!-- DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
-    database into the /create page. I will do that just to learn how to print data from the database into the website.
-    To do that, in the create() view, I will add Django’s Query Set notation into a variable. Then, I will send that
-    variable to the /create page via Jinja notation. The syntax that I should use will be something like:
-    “ “variable_name”: Model_name.objects.all() .”
 
-     I will test printing the data from the Listings table from the database.
-
-     NOTE: The jinja code will be executed, even if it's within an HTML comment. So, I will DELETE this
-     test code and the Jinja notation once I finish this part of the assignment. -->
-    {% for listing in listings %}
-        <li>
-            Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-            {{listing.active}}, {{listing.picture_url}}, {{listing.category}}
-
-        </li>
-        <img src="{{listing.picture_url}}" height="200px">
-    {% endfor %}
 
 
 {% endblock %}
