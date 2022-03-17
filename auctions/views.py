@@ -144,6 +144,10 @@ To insert the PK of a user, I need to get an instance of the User table, or I’
 the Query Set syntax. To get an instance of the User table, I need to use the following syntax: “ 
 user = User.objects.get(id=id_number_from_user) “ (source: JamesO’s answer from 
 https://stackoverflow.com/questions/9616569/django-cannot-assign-u1-staffprofile-user-must-be-a-user-instance .)
+
+I need to fix the formatting of the database entries from the Categories model. I will use the 
+"strip()" function (source: https://www.codegrepper.com/code-examples/python/remove+outer+quotes+from+string+python ) 
+
 """
 @login_required
 def create(request):
@@ -163,10 +167,14 @@ def create(request):
         picture_url = request.POST["picture_url"]
         category = request.POST["category"]
 
+
+        # This removes the parentheses from the Categories entries.
+        category_formatted = category.strip('(')
+
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
                                description=description, initial_price=starting_bid, picture_url=picture_url, 
-                               category=category, active = True)
+                               category=category_formatted, active = True)
 
         # This inserts the new listing into the database
         new_listing.save()
