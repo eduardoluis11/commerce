@@ -93,10 +93,13 @@ https://www.codegrepper.com/code-examples/python/django+query+select+specific+co
 However, it seems that I now have to clean the data, since I’m getting “ (‘Gaming’,) ” or “ (‘Category_name’,) ” as the category 
 name. I need to remove the parentheses, the quotation marks, and the commas.
 
+BUG FIX: By using the “__str__” snippet on the Categories model, and then reverting the MultipleChoiceField field on 
+the form for the categories to “queryset: objects.all()”, I’m getting the name of the categories with the proper format.
+
 """
 class CreateListingForm(forms.Form):
     listing_title = forms.CharField(max_length=128)
     starting_bid = forms.DecimalField(max_digits=12, decimal_places=2)
     description = forms.CharField(max_length=4500, widget=forms.Textarea)
     picture_url = forms.CharField(max_length=2048, required=False)
-    category = forms.ModelChoiceField(queryset=Categories.objects.values_list('category'), required=False)
+    category = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False)

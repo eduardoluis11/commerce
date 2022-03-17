@@ -155,6 +155,13 @@ Django’s API for working with databases, I get the name of each field for that
 “<querySet(number)>”. This way, it will be much easier to work with my database. After re-watching Brian’s lecture, it 
 seems that the syntax that I need to use is the following: ‘def __str__(self): return f”{self.id}: {self.first_field} 
 to {self.last_field}” ’. That must be just below the last field of the class in the model.
+
+I need to use the strip() function somewhere else so that, in the dropdown menu, the parentheses, the commas, and the 
+quotation marks disappear.
+
+To fix the item names on the dropdown menu (so that it doesn’t display “cateogyr object(1/2/3/4)”), I needed to add a 
+“__str__” snippet on the class that contains the Categories model, as Brian explained during the lecture.
+
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -333,6 +340,13 @@ Since I assigned a limit of 64 characters to the “category” field on the “
 create a category with more than 64 characters, I will make the only field that the “Categories” model will have to also have a 
 limit of 64 characters.
 
+To fix the item names on the dropdown menu (so that it doesn’t display “category object(1/2/3/4)”), I needed to 
+add a “__str__” snippet on the class that contains the Categories model, as Brian explained during the lecture.
+
 """
 class Categories(models.Model):
     category = models.CharField(max_length=64, default='None')
+
+    # This will change the dropdown menu items from "category object (1/2)" to the actual category name
+    def __str__(self):
+        return f"{self.category}"

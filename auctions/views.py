@@ -169,12 +169,12 @@ def create(request):
 
 
         # This removes the parentheses from the Categories entries.
-        category_formatted = category.strip('(')
+        # category_formatted = category.strip('(')
 
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
                                description=description, initial_price=starting_bid, picture_url=picture_url, 
-                               category=category_formatted, active = True)
+                               category=category, active = True)
 
         # This inserts the new listing into the database
         new_listing.save()
