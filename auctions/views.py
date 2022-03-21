@@ -254,14 +254,30 @@ Now, I need to go to urls.py, since I need to create a page specific for each li
 listing to differentiate the URL from each listing page. To do that, I will need to insert the ID of the currently 
 clicked listing into a string from the views.py field (if I’m not mistaken), and then insert it into the “<str” 
 keyword in urls.py.
+
+To get the seller’s name on the views.py file, first, I will get the seller’s ID from the listing’s entry. The specific 
+field that I want from the Listings table is called “seller_id_id”, which I’ll need to store in a variable. Then, I need 
+to call the User table, and find a user whose ID is the same as the one in the listing for that particular page. Finally, 
+I want to obtain the username of that user, and then send it to listing.html.
+
+What I ended up doing was to obtain the ID of the current listing, and all of the IDs of all of the users. Then, in jinja 
+notation on the listing.html file, I used an “if” statement comparing the seller’s ID from the current listing, and all 
+the IDs from all of the users. If they are the same, the name of the seller will be printed. 
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display
     current_listing = Listings.objects.filter(id=listing_id)
 
+    # This stores the seller ID of the current listing
+    # seller_id = current_listing.product_name
+
+    # This obtains all of the data from all of the sellers
+    seller = User.objects.all()
+
 
     # This renders the selected listing
     return render(request, "auctions/listing.html", {
-        "current_listing": current_listing
+        "current_listing": current_listing,
+        "seller": seller
     })
-

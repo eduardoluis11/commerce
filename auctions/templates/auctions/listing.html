@@ -2,9 +2,37 @@
 
 {% block body %}
 
-    <!-- This displays the title of the currently selected listing -->
+    <!-- This displays the title of the currently selected listing.
+    
+    The next step is to show all of the information for that particular listing (including the category, 
+    which I’m not showing on the home page). I think I also want to show the name of the seller. I can do 
+    that by using the seller’s ID, and then printing their name.
+    -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
+
+        <p>   <!-- Price -->
+            <b>Price:</b> ${{listing_data.initial_price}}
+        </p>
+        <p> <!-- Description -->
+            {{listing_data.description}}
+        </p>
+        <p> <!-- Date when the listing was created -->
+            <small class="text-muted">Created on: {{listing_data.created_on}}</small>
+        </p>
+        <p> <!-- Category -->
+            {{listing_data.category}}
+        </p>
+        
+        <!-- This will print the seller's name by comparing the IDs of all of the users, and the seller ID from the
+        current listing -->
+        {% for seller_data in seller %}
+            {% if seller_data.id == listing_data.seller_id_id %}
+                <p> <!-- Seller's name -->
+                    Seller: {{seller_data.username}}
+                </p>
+            {%endif%}
+        {% endfor %}
 
         <!-- Listing image -->
         <img src="{{listing_data.picture_url}}" width="500rem" alt="{{listing_data.product_name}}'s picture">
