@@ -40,6 +40,18 @@
 	If I change a listing’s active status to “False”, the listing is still appearing n the home page, but it’s now
 	showing the message “False”. I need to edit my code so that the inactive listings don’t show up on the home screen.
 
+	I can also confirm that, if I create a listing from another user, that the new listing will be displayed for all
+	users, and that it will also be displayed if the user logs out. So, I will deactivate the “True” debugging message
+	for the active status of the products, since the web app is behaving properly.
+
+	Even though the home page is now listing all of the active listings and the data that this assignment is asking
+	me to, I will fix the styles (the CSS) of the information being displayed.
+
+	To fix the CSS as fast as possible, I will use Bootstrap. I think a Bootstrap card will make each listing to look
+	visually good. I will use Bootstrap’s “Horizontal” card (source:
+	https://getbootstrap.com/docs/4.4/components/card/ .)
+
+
 
     DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
     database into the /create page. I will do that just to learn how to print data from the database into the website.
@@ -56,13 +68,38 @@
     {% for listing in listings %}
         <!-- This will make the home page to only display the active listings -->
         {% if listing.active == True %}
-            <li>
-                {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}}
+<!--            <li>-->
+<!--                {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}}-->
 
-            </li>
+<!--            </li>-->
 
             <!-- This displays the listing's photo -->
-            <img src="{{listing.picture_url}}" height="100px">
+<!--            <img src="{{listing.picture_url}}" height="100px">-->
+
+            <!-- Bootstrap's "Horizontal" card class (source: https://getbootstrap.com/docs/4.4/components/card/) -->
+            <div class="card mb-3" style="max-width: 540px;">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <!-- This displays the listing's photo -->
+                  <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{listing.product_name}}</h5>    <!-- Product title -->
+                      <p class="card-text">   <!-- Price -->
+                        <b>Price:</b> ${{listing.initial_price}}
+                      </p>
+                    <p class="card-text">   <!-- Product description -->
+                        {{listing.description}}
+                    </p>
+                    <p class="card-text"> <!-- Date when the listing was created -->
+                        <!-- BUG: For some reason, the only date being displayed is Jan 1st, 2022. -->
+                        <small class="text-muted">Created on: {{listing.created_on}}</small>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
         {% endif %}
     {% endfor %}
 {% endblock %}
