@@ -51,6 +51,9 @@
 	visually good. I will use Bootstrap’s “Horizontal” card (source:
 	https://getbootstrap.com/docs/4.4/components/card/ .)
 
+	Now, I want the border of each card to have the same width as the browser’s window. I tried doing that, but then
+	the text’s alignment changed from being left-aligned to being on the center of the browser. For the time being,
+	I will leave the cards’ width in around “50rem”.
 
 
     DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
@@ -77,7 +80,7 @@
 <!--            <img src="{{listing.picture_url}}" height="100px">-->
 
             <!-- Bootstrap's "Horizontal" card class (source: https://getbootstrap.com/docs/4.4/components/card/) -->
-            <div class="card mb-3" style="max-width: 540px;">
+            <div class="card mb-3" style="max-width: 50rem;">
               <div class="row no-gutters">
                 <div class="col-md-4">
                   <!-- This displays the listing's photo -->
