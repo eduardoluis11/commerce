@@ -33,6 +33,14 @@
 	Note 2: I want to redirect the users from the /create page to the home page, or at least show a confirmation
 	message, after they create a listing on /create.
 
+	For the time being, I will leave the “True” message on, which tells me if the listing is active or not, for
+	debugging purposes. It’s just to confirm that only the active listings are appearing on the home screen. I could
+	change a listing to “False” just to confirm that it won’t appear on the home screen.
+
+	If I change a listing’s active status to “False”, the listing is still appearing n the home page, but it’s now
+	showing the message “False”. I need to edit my code so that the inactive listings don’t show up on the home screen.
+
+
     DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
     database into the /create page. I will do that just to learn how to print data from the database into the website.
     To do that, in the create() view, I will add Django’s Query Set notation into a variable. Then, I will send that
@@ -46,13 +54,16 @@
 
      -->
     {% for listing in listings %}
-        <li>
-            Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-            {{listing.active}}
+        <!-- This will make the home page to only display the active listings -->
+        {% if listing.active == True %}
+            <li>
+                Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
+                {{listing.active}}
 
-        </li>
+            </li>
 
-        <!-- This displays the listing's photo -->
-        <img src="{{listing.picture_url}}" height="100px">
+            <!-- This displays the listing's photo -->
+            <img src="{{listing.picture_url}}" height="100px">
+        {% endif %}
     {% endfor %}
 {% endblock %}
