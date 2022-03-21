@@ -56,16 +56,19 @@
 	I will leave the cards’ width in around “50rem”.
 
 
-    DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
-    database into the /create page. I will do that just to learn how to print data from the database into the website.
-    To do that, in the create() view, I will add Django’s Query Set notation into a variable. Then, I will send that
-    variable to the /create page via Jinja notation. The syntax that I should use will be something like:
-    “ “variable_name”: Model_name.objects.all() .”
+	I will make each card that contains each listing to become clickable. Either that, or just the title or the image.
+	I could enclose everything on an <a> tag, but that could mess up the CSS of the text inside of each card.
 
-     I will test printing the data from the Listings table from the database.
+	Indeed: by inserting everything inside of an <a> tag, the entire card became clickable. However, all of the cards’
+	text became blue, and has an underline. I’ll try to use “text: no-decoration” or something like that to remove the
+	blue color and the underline.
 
-     NOTE: The jinja code will be executed, even if it's within an HTML comment. So, I will DELETE this
-     test code and the Jinja notation once I finish this part of the assignment.
+	To prevent the color of each listing from changing into blue after inserting them inside of an <a> tag, I need to
+	use the “color: inherit” CSS property (source:
+	https://www.codegrepper.com/code-examples/css/CSS+how+to+remove+blue+text+color+on+links .) Meanwhile, to prevent
+	the underline from appearing when hovering the mouse over each listing, I need to use the “text-decoration: none”
+	CSS property (source: https://www.w3schools.com/cssref/pr_text_text-decoration.asp .)
+
 
      -->
     {% for listing in listings %}
@@ -81,26 +84,28 @@
 
             <!-- Bootstrap's "Horizontal" card class (source: https://getbootstrap.com/docs/4.4/components/card/) -->
             <div class="card mb-3" style="max-width: 50rem;">
-              <div class="row no-gutters">
-                <div class="col-md-4">
-                  <!-- This displays the listing's photo -->
-                  <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}'s picture">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">{{listing.product_name}}</h5>    <!-- Product title -->
-                      <p class="card-text">   <!-- Price -->
-                        <b>Price:</b> ${{listing.initial_price}}
-                      </p>
-                    <p class="card-text">   <!-- Product description -->
-                        {{listing.description}}
-                    </p>
-                    <p class="card-text"> <!-- Date when the listing was created -->
-                        <small class="text-muted">Created on: {{listing.created_on}}</small>
-                    </p>
+                <a href="#" style="text-decoration: none; color: inherit;">
+                  <div class="row no-gutters">
+                    <div class="col-md-4">
+                      <!-- This displays the listing's photo -->
+                      <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}'s picture">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title">{{listing.product_name}}</h5>    <!-- Product title -->
+                          <p class="card-text">   <!-- Price -->
+                            <b>Price:</b> ${{listing.initial_price}}
+                          </p>
+                        <p class="card-text">   <!-- Product description -->
+                            {{listing.description}}
+                        </p>
+                        <p class="card-text"> <!-- Date when the listing was created -->
+                            <small class="text-muted">Created on: {{listing.created_on}}</small>
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </a>
             </div>
         {% endif %}
     {% endfor %}
