@@ -69,6 +69,8 @@
 	the underline from appearing when hovering the mouse over each listing, I need to use the “text-decoration: none”
 	CSS property (source: https://www.w3schools.com/cssref/pr_text_text-decoration.asp .)
 
+	Now, I need to update the links on the home page so that, when the user clicks on a listing, the will be taken to
+	the information page to that particular listing.
 
      -->
     {% for listing in listings %}
@@ -84,7 +86,10 @@
 
             <!-- Bootstrap's "Horizontal" card class (source: https://getbootstrap.com/docs/4.4/components/card/) -->
             <div class="card mb-3" style="max-width: 50rem;">
-                <a href="#" style="text-decoration: none; color: inherit;">
+
+                <!-- I will edit the link so that the user gets redirected to a page that shows the information
+                 for that particular listing -->
+                <a href="listing/{{listing.id}}" style="text-decoration: none; color: inherit;">
                   <div class="row no-gutters">
                     <div class="col-md-4">
                       <!-- This displays the listing's photo -->
