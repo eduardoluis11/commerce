@@ -57,8 +57,7 @@
         <!-- This will make the home page to only display the active listings -->
         {% if listing.active == True %}
             <li>
-                Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-                {{listing.active}}
+                {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}}
 
             </li>
 
