@@ -256,9 +256,12 @@ clicked listing into a string from the views.py field (if I’m not mistaken), a
 keyword in urls.py.
 """
 def display_listing(request, listing_id):
+    # This obtains the listing that I want to display
+    current_listing = Listings.objects.filter(id=listing_id)
 
 
+    # This renders the selected listing
     return render(request, "auctions/listing.html", {
-        "listings": Listings.objects.all()
+        "current_listing": current_listing
     })
 

@@ -2,8 +2,9 @@
 
 {% block body %}
 
-    {% for listing in listings %}
-        <h2>{{listing.product_name}}</h2>
+    <!-- This displays the title of the currently selected listing -->
+    {% for listing_data in current_listing %}
+        <h2>{{listing_data.product_name}}</h2>
     {% endfor %}
 
     <!-- I need to FIX the URL later, since I haven't created the view which will display an individual listing.
