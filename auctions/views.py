@@ -4,6 +4,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+""" This will let me obtain the current date and time whenever I create a listing (source: 
+https://pythonguides.com/how-to-get-current-time-in-django/ )
+"""
+import datetime
+
 """ This will let me use the "@login_required" attribute (source: 
 https://docs.djangoproject.com/en/4.0/topics/auth/default/#the-login-required-decorator )
 """
@@ -174,6 +179,21 @@ I’ll put an “if” statement saying that, if the user types “ ‘’ ” a
 the “category_formatted” variable. Otherwise, I will use the query set statement that will look for the category name 
 whose ID is the one inserted in the form submitted by the user.
 
+BUG: For some reason, the only date being displayed is Jan 1st, 2022. 
+
+The database is displaying the date of creation for all of the listings to be jan 1st, 2022. I need to see what went 
+wrong. It may be that it’s inserting the default ate that I specified, instead of taking the current date and time of 
+creation of the entry. After checking aout my code on models.py, I can confirm that the default date that I specified 
+is indeed January 1st, 2022. I need to modofy the code to take the current date and time whenever I create a new 
+listing.
+
+In my views.py file, I’m never obtaining the date from anywhere, neither from the form, nor from a Query Set 
+statement. So, I will have to use the proper Query Set statement to grab the current date and time, and insert in into 
+the “created_on” variable, that is, inside of each listings’ entry.
+
+It seems that I need to import a Python library called “datetime”, and then I need to use this snippet on the views.py 
+file: “datetime.now()” (source: https://pythonguides.com/how-to-get-current-time-in-django/ .)
+
 """
 @login_required
 def create(request):
@@ -193,6 +213,9 @@ def create(request):
         picture_url = request.POST["picture_url"]
         category = request.POST["category"]
 
+        # This obtains the current date and time
+        current_date_and_time = datetime.datetime.now()
+
 
         # This removes the parentheses from the Categories entries.
         # category_formatted = category.strip('(')
@@ -209,7 +232,7 @@ def create(request):
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
                                description=description, initial_price=starting_bid, picture_url=picture_url, 
-                               category=category_formatted, active = True)
+                               category=category_formatted, created_on=current_date_and_time, active = True)
 
         # This inserts the new listing into the database
         new_listing.save()

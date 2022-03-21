@@ -81,7 +81,7 @@
               <div class="row no-gutters">
                 <div class="col-md-4">
                   <!-- This displays the listing's photo -->
-                  <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}">
+                  <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}'s picture">
                 </div>
                 <div class="col-md-8">
                   <div class="card-body">
@@ -93,7 +93,6 @@
                         {{listing.description}}
                     </p>
                     <p class="card-text"> <!-- Date when the listing was created -->
-                        <!-- BUG: For some reason, the only date being displayed is Jan 1st, 2022. -->
                         <small class="text-muted">Created on: {{listing.created_on}}</small>
                     </p>
                   </div>
