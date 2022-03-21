@@ -18,6 +18,21 @@
     set to “True”, I will display that entry in the home page when the user logs in. However, right now, I don’t have any
     way of turning it into “False” (that should happen if, for instance, a user wins the bid and buys that product.)
 
+    I can show the active listings in the home page, regardless of whether the user has logged in or not. Remember that
+    you don’t have to be logged in in eBay in order to see a product and their price. You only need to log in to buy
+    or sell a product.
+
+	I need to send all of the resulting data into index.html, NOT to create.html. I want to display the listings on
+	the home page, NOT on the page for creating a new listing. So, I’ll need to specify that on the views.py file.
+
+	I’ll edit the code to, at first, only show each listing’s title, initial price (since I don’t currently have a way
+	to increase the price of the bid), description, and the photo. I will hide everything else.
+
+	Note: I need to display the active listings of ALL the users, not only the listings of the currently logged in user.
+
+	Note 2: I want to redirect the users from the /create page to the home page, or at least show a confirmation
+	message, after they create a listing on /create.
+
     DEBUGGING CODE: I will add some debugging code to print the data stored in the Listings table from the
     database into the /create page. I will do that just to learn how to print data from the database into the website.
     To do that, in the create() view, I will add Django’s Query Set notation into a variable. Then, I will send that
@@ -27,13 +42,17 @@
      I will test printing the data from the Listings table from the database.
 
      NOTE: The jinja code will be executed, even if it's within an HTML comment. So, I will DELETE this
-     test code and the Jinja notation once I finish this part of the assignment. -->
+     test code and the Jinja notation once I finish this part of the assignment.
+
+     -->
     {% for listing in listings %}
         <li>
             Listing {{listing.id}}: {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}},
-            {{listing.active}}, {{listing.picture_url}}, {{listing.category}}
+            {{listing.active}}
 
         </li>
+
+        <!-- This displays the listing's photo -->
         <img src="{{listing.picture_url}}" height="100px">
     {% endfor %}
 {% endblock %}
