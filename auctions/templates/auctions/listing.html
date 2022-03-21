@@ -5,6 +5,9 @@
     <!-- This displays the title of the currently selected listing -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
+
+        <!-- Listing image -->
+        <img src="{{listing_data.picture_url}}" width="500rem" alt="{{listing_data.product_name}}'s picture">
     {% endfor %}
 
     <!-- I need to FIX the URL later, since I haven't created the view which will display an individual listing.
