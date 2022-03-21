@@ -247,3 +247,18 @@ def create(request):
             "form": form,
             "listings": Listings.objects.all()
         })
+
+""" This will display a page for a specific listing if the user clicks on a listing on the home page.
+
+Now, I need to go to urls.py, since I need to create a page specific for each listing. I will use the ID of each 
+listing to differentiate the URL from each listing page. To do that, I will need to insert the ID of the currently 
+clicked listing into a string from the views.py field (if I’m not mistaken), and then insert it into the “<str” 
+keyword in urls.py.
+"""
+def display_listing(request, listing_id):
+
+
+    return render(request, "auctions/listing.html", {
+        "listings": Listings.objects.all()
+    })
+

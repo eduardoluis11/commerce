@@ -1,0 +1,19 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    {% for listing in listings %}
+        <h2>{{listing.product_name}}</h2>
+    {% endfor %}
+
+    <!-- I need to FIX the URL later, since I haven't created the view which will display an individual listing.
+
+    In fact, for the time being, it doesn't make sense to use a form here, since I'm only displaying the listing's
+    information, not giving the user the option to edit it.
+
+    To display the information on the page, I won’t use forms (for the time being), and I won’t use Bootstrap cards.
+    I will use the entirety of the size of the browser. I’ll probably user a hero though.
+    -->
+
+
+{% endblock %}
