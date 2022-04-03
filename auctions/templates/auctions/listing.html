@@ -7,6 +7,16 @@
     The next step is to show all of the information for that particular listing (including the category, 
     which I’m not showing on the home page). I think I also want to show the name of the seller. I can do 
     that by using the seller’s ID, and then printing their name.
+
+    I think it may be better if, instead of creating a button using the <button> tag, I would create a POST form with a 
+    “submit” input. I’ll do that since, if I use a <button> tag, I would have to use JavaScript or an <a> tag to do any 
+    interaction with that button. And what I really want is getting data using Django and Python. So, a POST form 
+    with a “submit” input would be more appropriate.
+
+	And remember that the “Add to Watchlist” button should only appear if the user has logged into their account. So, I will 
+    hide that button using django so that it only appears if the user logs in. I need to use the decorator that hides content 
+    unless the user logs in.
+
     -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
@@ -14,9 +24,23 @@
         <p>   <!-- Price -->
             <b>Price:</b> ${{listing_data.initial_price}}
         </p>
+
+
+
         <p> <!-- Description -->
             {{listing_data.description}}
         </p>
+
+        {% if user.is_authenticated %}
+            <!-- "Add to Watchlist" button -->
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit" value="Add to Watchlist">
+            </form>
+        {% endif %}
+
+
+
         <p> <!-- Date when the listing was created -->
             <small class="text-muted">Created on: {{listing_data.created_on}}</small>
         </p>
