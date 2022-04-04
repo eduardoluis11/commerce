@@ -308,6 +308,11 @@ in my case, is the "product_id" field fro the Watchlist table. To fix that, it s
 statement without the user, and THEN I need to add the user using something like "user.add(request.user)" (source:
 https://geeksqa.com/django-direct-assignment-to-the-forward-side-of-a-many-to-many-set-is-prohibited-use-user-set-instead
 )
+
+BUG: The product page's URL is not being properly inserted into the database. What I'll do is to store the URL into 2
+parts: one with the word "listing/", and the other half with the product's ID. Then, I will concatenate both variables
+in a single variable using the "+" sign (source: https://www.educative.io/edpresso/how-to-concatenate-strings-in-python
+.)
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -328,14 +333,17 @@ def display_listing(request, listing_id):
     # This creates an instance of the User table, which I'll need to use in the Query Set syntax
     user_instance = User.objects.get(id=logged_user_id)
 
-    # This stores the currently selected product's URL
-    listing_url = "listing/f'{listing_id}'"
+    # This stores the 1st half of the currently selected product's URL
+    listing_url_1st_half = "listing/"
+
+    # This stores the full URL for the currently selected product
+    product_page_complete_url = listing_url_1st_half + listing_id
 
     # This executes if the user clicks on "Add to Watchlist"
     if request.method == "POST":
 
         # This prepares the Query Set statement for inserting the product into the Watchlist table
-        add_to_watchlist = Watchlists(user=user_instance, product_url=listing_url)
+        add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
         add_to_watchlist.save() # This saves the entry into the database
 
         # This will add the product's ID into the Watchlist database.
