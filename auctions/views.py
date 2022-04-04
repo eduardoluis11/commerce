@@ -264,16 +264,76 @@ What I ended up doing was to obtain the ID of the current listing, and all of th
 notation on the listing.html file, I used an “if” statement comparing the seller’s ID from the current listing, and all 
 the IDs from all of the users. If they are the same, the name of the seller will be printed. 
 
+I already have created the model for the watchlists. So, I will use a Query Set statement to add a currently selected product 
+into the Watchlist table as an entry. The first thing that I’ll need will be the ID code of the product. I don’t know if 
+I’m storing it as a foreign key, but, ideally, it should be that way. After checking, it turns out that I didn’t use a foreign 
+key, but a “OneToMany” and “ManyToMany” functions for the user ID and the listing ID for the Watchlist table. The columns for 
+the Watchlist table are User and the Listings tables (which probably takes the ID code for those tables), and the listing’s URL.
+	
+So, the Query Set statement that I’ll use to insert the product into a watchlist will insert that product’s URL, ID, and seller 
+ID into the Watchlist table in the database. The columns are “listing_url”, “user”, and “listing”. “listing_url” refers to the 
+URL for the selected product. “user” refers to the currently logged in user. Finally, “listing” refers to the currently 
+selected product.
+
+I’ll add a button that says “Add to Watchlist” once the user clicks on a product and enters that product’s page. If the user 
+has already added that product to their watchlist, the button will change to “Remove from watchlist”, which will remove the 
+item from the user’s watchlist.
+
+The table I’m interested in is called “auctions_watchlists”. There’s a similar table called “auctions_watchlists_user”. I think 
+this last table was automatically created since I’m using a “many to many” relationship function for the “user” column (the 
+column that gets the seller’s ID). 
+
+So, I will first create a button in the listing pages that say something like “Add to Watchlist”. Then, I will add in views.py 
+a Query Set on the view for the individual listing pages that will insert the seller ‘s ID, the listing ID, and the listing’s 
+URL into the “auctions_watchlists” table. The button can be styled using Bootstrap. I could put the button below the price. 
+After further consideration, I decided to put it under the description.
+
+To insert the logged in user’s data in the “user” column for the Watchlist table, I will obtain the logged in user’s ID from the 
+“request.user” function. Then, I’ll get that user by usign a Query Set statement looking for a user with the ID belonging to 
+the currently logged in user.
+
+Then, to insert the currently selected product’s data into the “listing” column of the Watchlist table, I will use a Query Set 
+statement to get the product whose ID is the one that’s typed on the URL bar. That’s already being inserted in the 2nd 
+parameter of the display_listing() view (which is called “listing_id”).
+
+Now, getting the URL of the currently selected product will be a bit tricky. I need to select the entire text that’s 
+inserted in the URL bar. I will use the URL used in the urls.py file for the display_listing() view as a template. So, I 
+may insert the URL “listing/listing_id>” in the “listing_url” column.
+
+Note: DO NOT USE get() on Listings.objects, since I would get an error that won't let me enter the page for a specific
+product. I should keep the filter() function. 
+
 """
 def display_listing(request, listing_id):
-    # This obtains the listing that I want to display
+    # This obtains the listing that I want to display as iterable objects
     current_listing = Listings.objects.filter(id=listing_id)
 
+    # This obtains a specific instance of a listing, which I'll need to store the listing in a watchlist
+    current_listing_instance = Listings.objects.get(id=listing_id)
+
     # This stores the seller ID of the current listing
-    # seller_id = current_listing.product_name
+    # seller_id = current_listing.seller_id
 
     # This obtains all of the data from all of the sellers
     seller = User.objects.all()
+
+    logged_user = request.user      # This stored the data from the currently logged in user
+    logged_user_id = logged_user.id     # PK of the currently logged in user
+
+    # This creates an instance of the User table, which I'll need to use in the Query Set syntax
+    user_instance = User.objects.get(id=logged_user_id)
+
+    # This stores the currently selected product's URL
+    listing_url = "listing/f'{listing_id}'"
+
+    # This executes if the user clicks on "Add to Watchlist"
+    if request.method == "POST":
+
+    #     # This prepares the Query Set statement for inserting the product into the Watchlist table 
+        add_to_watchlist = Watchlists(user=user_instance, product_id=current_listing_instance, product_url=listing_url)
+
+        add_to_watchlist.save() # This saves the entry into the database
+
 
 
     # This renders the selected listing

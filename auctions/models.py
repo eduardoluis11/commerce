@@ -318,15 +318,26 @@ that I specify a related_name attribute. So, I need to use syntax like the follo
 models.OneToOneField(table_that_I_want_to_import, on_delete=models.CASCADE, related_name="some_name", 
 default=”default_value”) . 
 
-For the many-to-many relationship between users and URLs, I will need to use the ManyToManyField(). Since a user could 
+For the many-to-many relationship between watchlists and URLs, I will need to use the ManyToManyField(). Since a user could 
 have an empty watchlist (if they decide to not to add anything to a wishlist), I will use the “blank=true” property of 
 the ManyToManyField(). The syntax could be like the following: models.ManyToManyField(table_that_I_want_to_import, 
-blank=True, related_name=’some_name’) .
+blank=True, related_name=’some_name’) . 
+
+Upon further consideration, I'm not storing the listings' URLs anywhere. So, 
+it's pointless to make a Many To Many relationship here: there's no table with stored listing URLs to begin with. A simple
+CharField to store the URLs will suffice.
+
+Only 1 user can have 1 watchlist, and only 1 watchlist can belong to a single user. So, I need to use a foreign key
+for the users, NOT a Many to Many relationship.
+
+The column that contains the product's ID needs to be a Many To Many relationship since a single watchlist can have 
+multiple products, and a single product can be added to multiple watchlists from multiple users. And Many To Many 
+fields don't need a "on_delete" property.
 """
 class Watchlists(models.Model):
-    listing_url = models.CharField(max_length=2048, default='')
-    user = models.ManyToManyField(User, blank=True, related_name='watchlist_from_user')
-    listing = models.OneToOneField(Listings, on_delete=models.CASCADE, related_name="URL_from_listing", default=0)
+    product_url = models.CharField(max_length=2048, default='')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist_from_user", default=0)
+    product_id = models.ManyToManyField(Listings, blank=True, related_name="ID_from_product", default=0)
 
 """ Now, I need to add the “Category” input, which I will make as a dropdown menu. I need to look up on w3schools how to make 
 this. In fact, I also have to look up how to make a dropdown input using Django forms.
