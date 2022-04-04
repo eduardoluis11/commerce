@@ -303,6 +303,11 @@ may insert the URL “listing/listing_id>” in the “listing_url” column.
 Note: DO NOT USE get() on Listings.objects, since I would get an error that won't let me enter the page for a specific
 product. I should keep the filter() function. 
 
+BUG: I'm getting an error telling me that I have issues when trying to assign the value to a Many To Many field, which,
+in my case, is the "product_id" field fro the Watchlist table. To fix that, it seems that I need to save the Query Set 
+statement without the user, and THEN I need to add the user using something like "user.add(request.user)" (source:
+https://geeksqa.com/django-direct-assignment-to-the-forward-side-of-a-many-to-many-set-is-prohibited-use-user-set-instead
+)
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -329,10 +334,12 @@ def display_listing(request, listing_id):
     # This executes if the user clicks on "Add to Watchlist"
     if request.method == "POST":
 
-    #     # This prepares the Query Set statement for inserting the product into the Watchlist table 
-        add_to_watchlist = Watchlists(user=user_instance, product_id=current_listing_instance, product_url=listing_url)
-
+        # This prepares the Query Set statement for inserting the product into the Watchlist table
+        add_to_watchlist = Watchlists(user=user_instance, product_url=listing_url)
         add_to_watchlist.save() # This saves the entry into the database
+
+        # This will add the product's ID into the Watchlist database.
+        add_to_watchlist.product_id.add(current_listing_instance)
 
 
 
