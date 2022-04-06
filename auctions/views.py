@@ -407,11 +407,29 @@ BUG Fix: The "Add to Watchlist" button doesn't change to "Remove" immediately af
 Instead, I have to exit the currently selected product's page, and the re-enter it so that I can notice the difference.
 So, I will try reloading the current page by using HttpResponseRedirect.
 
-BUG: If the user’s not logged in, I get an error message from Django saying "User matching query does not exist" whenever 
+BUG Fix: If the user’s not logged in, I get an error message from Django saying "User matching query does not exist" whenever 
 I try to enter into a product’s page. To fix it, I will try to use the function “request.user.is_authenticated” to check 
 if the uer’s logged in before trying to insert their ID into the variable that I’m using to store it (source: 
 https://www.delftstack.com/howto/django/django-check-logged-in-user/#:~:text=Check%20the%20Logged%20in%20User%20in%20Views%20in%20Django,-In%20views%2C%20we&text=We%20can%20use%20request.,in%2C%20it%20will%20return%20True%20. )
 
+Now, I will need to remove the product from the user’s watchlist if they click on “Remove”, by removing that entry from the 
+database. To do that, I will create a new input for the forms that have the “Add to Watchlist” and “Remove” buttons, 
+respectively. That new input, which will be hidden, will have their “name” attribute to have different values, so that the 
+views.py file can differentiate between the “Add” and the “Remove” buttons whenever a user clicks on them. For instance, I can 
+add “ name=’add’ ” for the “Add” button, and “ name=’remove’ ” for the “Remove” button. 
+
+Then in the display_listing() view, I will put an “if” statement that checks if the “add” or the “remove” buttons were pressed. 
+If the “add” input was submitted, I will insert that product into the watchlist. Meanwhile, if the “remove” button was submitted, 
+I will delete that entry from the database. I need to check how to delete an entry from a database by using Query Set notation.
+
+An alternative method would be to use the same “name” attribute for both the “Add” and “Remove” inputs. Then I would check on the 
+display_listing() view the value of the input. If the input’s value is “Add to Watchlist”, I will execute the Query Set statements 
+to add that product into the user’s watchlist. Otherwise, if the input is “Remove from Watchlist”, I will execute the Query Set 
+statements to remove that entry from the user’s watchlist in the database.
+
+To delete a record from a database by using Query Set notation, I need to use the following function: 
+“Table.objects.filter(id=id).delete()” (source: Wolph’s reply on 
+https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models .)
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -479,12 +497,8 @@ def display_listing(request, listing_id):
             if add_or_remove == "remove":
                 remove_message = "DEBUGGING MESSAGE: Remove from database"
 
-                # This prepares the Query Set statement for inserting the product into the Watchlist table
-                add_to_watchlist = Watchlists(user=user_instance, product_url=remove_message)
-                add_to_watchlist.save() # This saves the entry into the database
-
-                # This will add the product's ID into the Watchlist database
-                add_to_watchlist.product_id.add(current_listing_instance)
+                # This deletes the current product from the watchlist
+                Watchlists.objects.filter(product_id=listing_id).delete()
 
             # This will reload the current page, so that the button changes without having to exit the page
             return HttpResponseRedirect(f"/listing/{listing_id}")
