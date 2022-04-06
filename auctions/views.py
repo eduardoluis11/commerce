@@ -403,6 +403,10 @@ button to appear on the product's page. Otherwise, the "Add to Watchlist" will a
 integer, I need to use the int() function (source: 
 https://www.freecodecamp.org/news/python-convert-string-to-int-how-to-cast-a-string-in-python/#:~:text=To%20convert%2C%20or%20cast%2C%20a,int(%22str%22)%20.)
 
+BUG: The "Add to Watchlist" button doesn't change to "Remove" immediately after adding a product to that user's watchlist.
+Instead, I have to exit the currently selected product's page, and the re-enter it so that I can notice the difference.
+So, I will try reloading the current page by using HttpResponseRedirect.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -460,6 +464,9 @@ def display_listing(request, listing_id):
 
         # This will add the product's ID into the Watchlist database
         add_to_watchlist.product_id.add(current_listing_instance)
+
+        # This will reload the current page, so that the button changes without having to exit the page
+        return HttpResponseRedirect(f"/listing/{listing_id}")
 
 
     # This renders the selected listing
