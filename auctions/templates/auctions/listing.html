@@ -36,12 +36,14 @@
                 <!-- "Remove from Watchlist" button -->
                 <form method="post">
                     {% csrf_token %}
+                    <input type="text" name="add_or_remove" value="remove">
                     <input type="submit" value="Remove from Watchlist">
                 </form>
             {% else %}
                 <!-- "Add to Watchlist" button -->
                 <form method="post">
                     {% csrf_token %}
+                    <input type="text" name="add_or_remove" value="add">
                     <input type="submit" value="Add to Watchlist">
                 </form>
             {% endif %}

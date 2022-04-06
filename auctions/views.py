@@ -465,12 +465,26 @@ def display_listing(request, listing_id):
         # This executes if the user clicks on "Add to Watchlist"
         if request.method == "POST":
 
-            # This prepares the Query Set statement for inserting the product into the Watchlist table
-            add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
-            add_to_watchlist.save() # This saves the entry into the database
+            add_or_remove = request.POST["add_or_remove"]
 
-            # This will add the product's ID into the Watchlist database
-            add_to_watchlist.product_id.add(current_listing_instance)
+            if add_or_remove == "add":
+
+                # This prepares the Query Set statement for inserting the product into the Watchlist table
+                add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
+                add_to_watchlist.save() # This saves the entry into the database
+
+                # This will add the product's ID into the Watchlist database
+                add_to_watchlist.product_id.add(current_listing_instance)
+
+            if add_or_remove == "remove":
+                remove_message = "DEBUGGING MESSAGE: Remove from database"
+
+                # This prepares the Query Set statement for inserting the product into the Watchlist table
+                add_to_watchlist = Watchlists(user=user_instance, product_url=remove_message)
+                add_to_watchlist.save() # This saves the entry into the database
+
+                # This will add the product's ID into the Watchlist database
+                add_to_watchlist.product_id.add(current_listing_instance)
 
             # This will reload the current page, so that the button changes without having to exit the page
             return HttpResponseRedirect(f"/listing/{listing_id}")
