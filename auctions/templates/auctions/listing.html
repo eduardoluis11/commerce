@@ -32,11 +32,31 @@
         </p>
 
         {% if user.is_authenticated %}
-            <!-- "Add to Watchlist" button -->
-            <form method="post">
-                {% csrf_token %}
-                <input type="submit" value="Add to Watchlist">
-            </form>
+            {%  if display_remove_button == True %}
+                <!-- "Remove from Watchlist" button -->
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Remove from Watchlist">
+                </form>
+            {% else %}
+                <!-- "Add to Watchlist" button -->
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Add to Watchlist">
+                </form>
+            {% endif %}
+
+            <!-- DEBUGGING MESSAGE -->
+            {% for product in watchlist_array %}
+                {{product}}
+                <br>
+                {% if product == current_listing_id %}
+                    <p>They are the same number!</p>
+                {% endif %}
+            {% endfor %}
+            <br>
+            {{current_listing_id}}
+
         {% endif %}
 
 

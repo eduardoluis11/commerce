@@ -313,6 +313,96 @@ BUG: The product page's URL is not being properly inserted into the database. Wh
 parts: one with the word "listing/", and the other half with the product's ID. Then, I will concatenate both variables
 in a single variable using the "+" sign (source: https://www.educative.io/edpresso/how-to-concatenate-strings-in-python
 .)
+
+The ID of the products are NOT stored on the auctions_watchlists table: instead, they’re being inserted in a new table 
+that was automatically created called “auctions_watchlists_product_id”. This happened because the product_id column is 
+stored as a One To Many field, which generates a table. The auctions_watchlists_product_id stores the ID of each entry 
+on the watchlist, the ID of each entry in this new table, and the ID of the product added to the watchlist.
+
+Each watchlist doesn’t have their own ID. To separate one watchlist from the other, I have to use the ID of the user 
+who’s the owner of that watchlist. That way, I’ll use a filter to find all of the products added by a person by using 
+that person’s ID on the auctions_watchlist table.
+
+Now that the product is being properly added into the watchlist after clicking on the “Add to Watchlist” button, I need 
+to change that button into “Remove from Watchlist” after the user adds that product into their wish list. Then, after 
+clicking the “Remove” button, that product will be removed from the Watchlist table in the database.
+
+The ID of the products are NOT stored on the auctions_watchlists table: instead, they’re being inserted in a new table 
+that was automatically created called “auctions_watchlists_product_id”. This happened because the product_id column is 
+stored as a Many To Many field, which generates a table. The auctions_watchlists_product_id stores the ID of each entry 
+on the watchlist, the ID of each entry in this new table, and the ID of the product added to the watchlist.
+
+Each watchlist doesn’t have their own ID. To separate one watchlist from the other, I have to use the ID of the user 
+who’s the owner of that watchlist. That way, I’ll use a filter to find all of the products added by a person by using 
+that person’s ID on the auctions_watchlist table.
+
+So, to change the “Add to Watchlist” button to “Remove from Watchlist”, and the removing that product from that user’s 
+watchlist, I’ll have to make an “if” statement using Django on the display_listing.html page. I’ll specify that, if 
+that particular user doesn’t have that product on his list, to display “Add to Watchlist”. Otherwise, it should display 
+a button that says “Remove from Watchlist”.
+
+I need to get all of the IDs for the entries of the auction_watchlist table for the logged in user. Then, I need to 
+compare those IDs with the watchlist IDs stored in the auctions_watchlists_product_id. Since there will be inevitable 
+a match (since one of those tables has a Many To Many relationship with the other), I will compare those results with 
+the ID of the listing I’m currently in (which is stored in the listing_id variable in the display_entry() view.) If 
+the product where I’m currently in has the same ID as one of the products in the user’s watchlist, I should show the 
+“Remove” button. Otherwise, I should show the “Add to watchlist” button.
+
+Actually, the “if” statement to decide whether to show the “Add to Watchlist” or “Remove” button is less complicated 
+than I’m making it to be. I only need to check the number for the product ID on the product page’s URL (which is 
+stored in the listing_id parameter on the display_listing() view), and compare it with all of the products stored on 
+that user’s watchlist. If there’s a match, I will display the “Remove” button. Otherwise, I will display the “Add 
+to Watchlist” button.
+
+Then, I will send the listing_id parameter and the results of the subquery to the display_listing.html file from the 
+display_listing() function. Then, using Jinja, I will use an “if” statement that checks if the number in the listing
+is inside of the subquery. If it is, I will display the “Remove” button. Otherwise, I will display the “Add to 
+Watchlist” button.
+
+To check if the user has a product on their watchlist, I will make a subquery which will take data from both the 
+auctions_watchlists and the auctions_watchlists_product_id tables. In this case, I only want the product IDs for the 
+watchlist for the currently logged in user. I will do the subquery using Query Set notation, not SQL. To do that, I 
+will first make a Query Set query to obtain all of the IDs from the Watchlist table for the currently logged in user. 
+Then, I would make a query on the auctions_watchlists_product_id table to look for all of the products, but only 
+those whose watchlist ID match those as the ones in the previous query (source: Ramast’s reply from 
+https://stackoverflow.com/questions/8556297/how-to-subquery-in-queryset-in-django .)
+
+Upon further consideration, I don’t even need to use a subquery to check if the user added a product to their 
+watchlist. I could simply use a Query set query to select all items on the Watchlist table for the currently logged in 
+user, and send it to the listing.html file. Then, with an “if” statement, I would check if the ID of the current number 
+is inside that “array” with the user’s products. If it is, I will display the “remove” button.
+
+I could check if the number stored in the parameter "listing_id" exists in the Watchlist table for the currently
+logged-in user using an "if" statement through notation like the following: "if listing_id in Watchlists.objects.filter"
+(source: Siddharth Gupta's reply from 
+https://stackoverflow.com/questions/32002207/how-to-check-if-an-element-is-present-in-a-django-queryset .)
+
+By looking at my submission for the “Wiki” homework assignment, I think I may have the solution that I’m looking for to check 
+when to display the “Remove” or the “Add to Watchlist” buttons. I will first go to the views.py file to the view that displays 
+that page for a particular listing/product. Here, I will declare an empty array, which will be used for storing all of the 
+products in the watchlist from the currently-logged user. Then, I will create a “for” loop and an “if” statement to populate 
+that array with all of the products stored ina a watchlist that belong to the currently-logged user. Then, I will send that 
+array to the listing.html page. 
+
+Then, I will go to the listing.html file, and I will use Jinja notation. Here, I will use a “for” loop and an “if” statement 
+to check for each product within the array with the products stored in the user’s watchlist. If that array has a product with 
+the same ID as the current product being displayed on the webpage, that means the user has that product already stored on 
+their watchlist. So, I will display the “Remove” button. Otherwise, I will display the “Add to Watchlist” button.
+
+To store the product IDs, I need to use the "values_list()" from the Query Set notation (source: 
+https://docs.djangoproject.com/en/4.0/ref/models/querysets/ .)
+
+To remove the parentheses and the quotations marks when using values_list() while using a Query Set statement, 
+I need to add the parameter "flat=True" (source: https://docs.djangoproject.com/en/4.0/ref/models/querysets/ .)
+
+I was finally able to modify the button from "Add to Wishlist" to "Remove". To do it, I needed to convert both
+the listing_id variable (the parameter that stores the ID for the product whose page the user has currently clicked
+on) and the "product" (or "i") variable in the "for" loop that populates the user's watchlist into integers. That
+way, I can safely compare both numbers. If both numbers are the same, a boolean variable will tell the "Remove"
+button to appear on the product's page. Otherwise, the "Add to Watchlist" will appear. To convert a value into an
+integer, I need to use the int() function (source: 
+https://www.freecodecamp.org/news/python-convert-string-to-int-how-to-cast-a-string-in-python/#:~:text=To%20convert%2C%20or%20cast%2C%20a,int(%22str%22)%20.)
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -333,6 +423,28 @@ def display_listing(request, listing_id):
     # This creates an instance of the User table, which I'll need to use in the Query Set syntax
     user_instance = User.objects.get(id=logged_user_id)
 
+    # This array will store all of the products from a user's watchlist
+    watchlist_array = []
+
+    # This will make it so that the "Remove" button won't appear by default, and to prevent a bug that makes 
+    # the "Add to Watchlist" button to appear multiple times
+    display_remove_button = False
+
+    # This gets all the products inside the currently logged-in user's watchlist
+    users_products_in_watchlist = Watchlists.objects.values_list('product_id', flat=True).filter(user=logged_user_id)
+
+    for product in users_products_in_watchlist:
+        watchlist_array.append(product)
+        if int(listing_id) == int(product):
+            display_remove_button = True
+
+
+
+    # if listing_id in Watchlists.objects.filter(user=logged_user_id):
+    #     display_remove_button = True
+    # else:
+    #     display_remove_button = False
+
     # This stores the 1st half of the currently selected product's URL
     listing_url_1st_half = "listing/"
 
@@ -346,13 +458,16 @@ def display_listing(request, listing_id):
         add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
         add_to_watchlist.save() # This saves the entry into the database
 
-        # This will add the product's ID into the Watchlist database.
+        # This will add the product's ID into the Watchlist database
         add_to_watchlist.product_id.add(current_listing_instance)
-
 
 
     # This renders the selected listing
     return render(request, "auctions/listing.html", {
         "current_listing": current_listing,
-        "seller": seller
+        "seller": seller,
+        "current_listing_id": listing_id,
+        "watchlist_array": watchlist_array,
+        "display_remove_button": display_remove_button
+        # "users_products_in_watchlist": users_products_in_watchlist
     })
