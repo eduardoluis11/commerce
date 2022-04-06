@@ -403,9 +403,14 @@ button to appear on the product's page. Otherwise, the "Add to Watchlist" will a
 integer, I need to use the int() function (source: 
 https://www.freecodecamp.org/news/python-convert-string-to-int-how-to-cast-a-string-in-python/#:~:text=To%20convert%2C%20or%20cast%2C%20a,int(%22str%22)%20.)
 
-BUG: The "Add to Watchlist" button doesn't change to "Remove" immediately after adding a product to that user's watchlist.
+BUG Fix: The "Add to Watchlist" button doesn't change to "Remove" immediately after adding a product to that user's watchlist.
 Instead, I have to exit the currently selected product's page, and the re-enter it so that I can notice the difference.
 So, I will try reloading the current page by using HttpResponseRedirect.
+
+BUG: If the user’s not logged in, I get an error message from Django saying "User matching query does not exist" whenever 
+I try to enter into a product’s page. To fix it, I will try to use the function “request.user.is_authenticated” to check 
+if the uer’s logged in before trying to insert their ID into the variable that I’m using to store it (source: 
+https://www.delftstack.com/howto/django/django-check-logged-in-user/#:~:text=Check%20the%20Logged%20in%20User%20in%20Views%20in%20Django,-In%20views%2C%20we&text=We%20can%20use%20request.,in%2C%20it%20will%20return%20True%20. )
 
 """
 def display_listing(request, listing_id):
@@ -421,52 +426,60 @@ def display_listing(request, listing_id):
     # This obtains all of the data from all of the sellers
     seller = User.objects.all()
 
-    logged_user = request.user      # This stored the data from the currently logged in user
-    logged_user_id = logged_user.id     # PK of the currently logged in user
+    # If the user is logged in, I will store their ID
+    if request.user.is_authenticated:
+        logged_user = request.user      # This stored the data from the currently logged in user
+        logged_user_id = logged_user.id     # PK of the currently logged in user
 
-    # This creates an instance of the User table, which I'll need to use in the Query Set syntax
-    user_instance = User.objects.get(id=logged_user_id)
+        # This creates an instance of the User table, which I'll need to use in the Query Set syntax
+        user_instance = User.objects.get(id=logged_user_id)
 
-    # This array will store all of the products from a user's watchlist
-    watchlist_array = []
+        # This array will store all of the products from a user's watchlist
+        watchlist_array = []
 
-    # This will make it so that the "Remove" button won't appear by default, and to prevent a bug that makes 
-    # the "Add to Watchlist" button to appear multiple times
-    display_remove_button = False
+        # This will make it so that the "Remove" button won't appear by default, and to prevent a bug that makes 
+        # the "Add to Watchlist" button to appear multiple times
+        display_remove_button = False
 
-    # This gets all the products inside the currently logged-in user's watchlist
-    users_products_in_watchlist = Watchlists.objects.values_list('product_id', flat=True).filter(user=logged_user_id)
+        # This gets all the products inside the currently logged-in user's watchlist
+        users_products_in_watchlist = Watchlists.objects.values_list('product_id', flat=True).filter(user=logged_user_id)
 
-    for product in users_products_in_watchlist:
-        watchlist_array.append(product)
-        if int(listing_id) == int(product):
-            display_remove_button = True
+        for product in users_products_in_watchlist:
+            watchlist_array.append(product)
+            if int(listing_id) == int(product):
+                display_remove_button = True
 
 
 
-    # if listing_id in Watchlists.objects.filter(user=logged_user_id):
-    #     display_remove_button = True
-    # else:
-    #     display_remove_button = False
+        # if listing_id in Watchlists.objects.filter(user=logged_user_id):
+        #     display_remove_button = True
+        # else:
+        #     display_remove_button = False
 
-    # This stores the 1st half of the currently selected product's URL
-    listing_url_1st_half = "listing/"
+        # This stores the 1st half of the currently selected product's URL
+        listing_url_1st_half = "listing/"
 
-    # This stores the full URL for the currently selected product
-    product_page_complete_url = listing_url_1st_half + listing_id
+        # This stores the full URL for the currently selected product
+        product_page_complete_url = listing_url_1st_half + listing_id
 
-    # This executes if the user clicks on "Add to Watchlist"
-    if request.method == "POST":
+        # This executes if the user clicks on "Add to Watchlist"
+        if request.method == "POST":
 
-        # This prepares the Query Set statement for inserting the product into the Watchlist table
-        add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
-        add_to_watchlist.save() # This saves the entry into the database
+            # This prepares the Query Set statement for inserting the product into the Watchlist table
+            add_to_watchlist = Watchlists(user=user_instance, product_url=product_page_complete_url)
+            add_to_watchlist.save() # This saves the entry into the database
 
-        # This will add the product's ID into the Watchlist database
-        add_to_watchlist.product_id.add(current_listing_instance)
+            # This will add the product's ID into the Watchlist database
+            add_to_watchlist.product_id.add(current_listing_instance)
 
-        # This will reload the current page, so that the button changes without having to exit the page
-        return HttpResponseRedirect(f"/listing/{listing_id}")
+            # This will reload the current page, so that the button changes without having to exit the page
+            return HttpResponseRedirect(f"/listing/{listing_id}")
+    
+    # Ths will prevent any bugs that won'tlet me show a product's page if I'm not logged in
+    else:
+        watchlist_array = []
+        display_remove_button = False
+
 
 
     # This renders the selected listing
