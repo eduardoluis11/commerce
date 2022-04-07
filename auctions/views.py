@@ -15,9 +15,10 @@ https://docs.djangoproject.com/en/4.0/topics/auth/default/#the-login-required-de
 from django.contrib.auth.decorators import login_required
 
 """  This will let me use the Django form for creating listings, which is on the forms.py file (source: 
-https://docs.djangoproject.com/en/4.0/topics/forms/ )
+https://docs.djangoproject.com/en/4.0/topics/forms/ . I'm also adding the form that allows me to get the bids from
+buyers. )
 """
-from .forms import CreateListingForm
+from .forms import CreateListingForm, BidForm
 
 from .models import User
 
@@ -430,6 +431,21 @@ statements to remove that entry from the user’s watchlist in the database.
 To delete a record from a database by using Query Set notation, I need to use the following function: 
 “Table.objects.filter(id=id).delete()” (source: Wolph’s reply on 
 https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models .)
+
+Users should be able to see the bid form from the listing.html page (the page that displays the currently selected 
+product.) So, there’s no need (and I shouldn’t) create a new view. I should use a currently existing view(), which, in 
+this case, should be the display_listing() view. I will import the bid form into that view, and send it via Jinja to 
+listing.html.
+
+However, the only users who should be able to bid should be logged users. The assignment even says “If the user is 
+signed in, the user should be able to bid on the item”. So, I should use the function that says that, if the user’s 
+signed in, that the user should be able to see the bid form.
+
+Also, I will have to insert the bid amount into two tables: The Bids table, and the Listings table. I need to update 
+the price of the product after someone makes a bid, so the Listing table needs to be updated. Also, since it seems 
+that one of the questions of this homework assignment asks me to show a page with all of the bids made by a user, I 
+will need to keep track of that user’s bids. That can be done by inserting the bids on the Bids table.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -443,6 +459,9 @@ def display_listing(request, listing_id):
 
     # This obtains all of the data from all of the sellers
     seller = User.objects.all()
+
+    # This imports the form that will store the bids
+    bid_form = BidForm()
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
@@ -516,6 +535,7 @@ def display_listing(request, listing_id):
         "seller": seller,
         "current_listing_id": listing_id,
         "watchlist_array": watchlist_array,
-        "display_remove_button": display_remove_button
+        "display_remove_button": display_remove_button,
+        "bid_form": bid_form
         # "users_products_in_watchlist": users_products_in_watchlist
     })

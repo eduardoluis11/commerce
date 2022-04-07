@@ -22,10 +22,15 @@
         <h2>{{listing_data.product_name}}</h2>
 
         <p>   <!-- Price -->
-            <b>Price:</b> ${{listing_data.initial_price}}
+            <b>Current Bid:</b> ${{listing_data.initial_price}}
         </p>
 
+        <!-- Form that will get the buyer's bid. Only logged users will be able to see it -->
+        {% if user.is_authenticated %}
+            {{bid_form}}
 
+            <input type="submit" value="Submit">
+        {% endif %}
 
         <p> <!-- Description -->
             {{listing_data.description}}

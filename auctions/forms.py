@@ -103,3 +103,25 @@ class CreateListingForm(forms.Form):
     description = forms.CharField(max_length=4500, widget=forms.Textarea)
     picture_url = forms.CharField(max_length=2048, required=False)
     category = forms.ModelChoiceField(queryset=Categories.objects.all(), required=False)
+
+""" I could use a form with a “type=number” attribute to let the user bid for a product. This is similar to how I allow 
+users to assign the price for their products when they create a new listing. However, unlike the “Create Listing” page, 
+I will have to assign a set of limitations to setting a price for a bid. Since the question says “If the bid doesn’t 
+meet those criteria, the user should be presented with an error,” I will allow users to enter an invalid bid, but I 
+will show them an error message afterwards. That is, I will allow them to submit a bid with a value lower than the 
+initial price or the current bid, but, after they submit that bid, I will display them an error message.
+
+The 1st two things that I’ll do will be: 1) to create a simple Django form in forms.py that will obtain the bid from 
+the buyers on the product pages; and 2) create a new view() function to get the data from the bid POST form, and insert 
+that bid into the database (on the Bid table.)
+
+I will only create 1 input on the new Django form that I will create (which will store the buyer’s bid.) That input 
+will only accept numbers. I will pretty much copy and paste it from the “starting bid” input from the 1st Django form 
+that I created for this project (which only accepts numbers, and has a 12-digit character limit.) I will later call 
+that form on the new view() that I will create for storing the bids made by the users. 
+
+I will, for the time being, call the input that stores the bid "Your Bid".
+
+"""
+class BidForm(forms.Form):
+    your_bid = forms.DecimalField(max_digits=12, decimal_places=2)
