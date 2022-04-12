@@ -446,6 +446,15 @@ the price of the product after someone makes a bid, so the Listing table needs t
 that one of the questions of this homework assignment asks me to show a page with all of the bids made by a user, I 
 will need to keep track of that user’s bids. That can be done by inserting the bids on the Bids table.
 
+Now, to detect whether I clicked on either “Bid” or “Add to Watchlist”, I will go the display_listing() view, and I 
+will use the following line of code to detect which submit button I clicked: "if 'post_form_name' in request.POST:"  
+(source: Damon Abdiel’s reply on 
+https://stackoverflow.com/questions/866272/how-can-i-build-multiple-submit-buttons-django-form .)
+
+Next, I need to add the code that will be executed if the user clicks on the “Bid” button. I will insert whatever 
+number is inserted in there into the database on the Bid table. But, for debugging reasons, I could add a message to 
+be printed if the user clicks on “Bid.”
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -462,6 +471,9 @@ def display_listing(request, listing_id):
 
     # This imports the form that will store the bids
     bid_form = BidForm()
+
+    # DEBUGGING message that will show up if the user clicks on "Bid"
+    debugging_message_bid_button = "You didn't click on the 'Bid' button,"
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
@@ -500,7 +512,7 @@ def display_listing(request, listing_id):
         product_page_complete_url = listing_url_1st_half + listing_id
 
         # This executes if the user clicks on "Add to Watchlist"
-        if request.method == "POST":
+        if 'submit_add_or_remove' in request.POST:
 
             add_or_remove = request.POST["add_or_remove"]
 
@@ -521,6 +533,12 @@ def display_listing(request, listing_id):
 
             # This will reload the current page, so that the button changes without having to exit the page
             return HttpResponseRedirect(f"/listing/{listing_id}")
+
+        # This checks if the "Bid" submit button was pressed
+        elif 'submit_bid' in request.POST:
+            debugging_message_bid_button = "Great! You clicked on the 'Bid' button!"
+
+
     
     # Ths will prevent any bugs that won'tlet me show a product's page if I'm not logged in
     else:
@@ -536,6 +554,7 @@ def display_listing(request, listing_id):
         "current_listing_id": listing_id,
         "watchlist_array": watchlist_array,
         "display_remove_button": display_remove_button,
-        "bid_form": bid_form
+        "bid_form": bid_form,
+        "debugging_message_bid_button": debugging_message_bid_button
         # "users_products_in_watchlist": users_products_in_watchlist
     })

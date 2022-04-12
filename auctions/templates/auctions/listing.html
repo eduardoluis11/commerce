@@ -17,6 +17,20 @@
     hide that button using django so that it only appears if the user logs in. I need to use the decorator that hides content 
     unless the user logs in.
 
+    To differentiate the 2 submits, there are 2 ways: 1) I could add a different “name” attribute to both submits. 2) I
+    could ignore the “name” attributes of the submit buttons, and, instead, I would get the “name” attributes from the
+    inputs that contain the bid and the ”Add to watchlist” buttons. With the latter, I could get a bug in which, if I
+    type a bid, and then click on “Add to watchlist” instead of “Bid”, I would get buggy behavior. So, I’ll try to
+    change the “name” attribute for the “Submit” buttons (“Bid” and “Add/Remove from Watchlist”).
+
+    Also, since the “add” or “remove” inputs are always present (even though they are hidden from the user), no matter
+    which submit button I click: the input with the “add_or_delete” name will always have a value in it, so, the data
+    from the “Add/Remove from Watchlist” will always be sent, even if I click on “Bid”. So, I will get buggy behavior,
+    no matter what. So, I need to change the “name” attribute of the “Bid” and “Add to Watchlist” buttons.
+
+    Actually, after rechecking my code, I had actually manually added the submit buttons. So, I can manually add them
+    a different “name” attribute to all the submit buttons.
+
     -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
@@ -27,9 +41,16 @@
 
         <!-- Form that will get the buyer's bid. Only logged users will be able to see it -->
         {% if user.is_authenticated %}
-            {{bid_form}}
-
-            <input type="submit" value="Submit">
+            <form method="post">
+                {% csrf_token %}
+                {{bid_form}}
+                <br>
+                <input class="btn btn-primary" type="submit" name="submit_bid" value="Bid">
+                <br>
+                <br>
+                <!-- DEBUGGING message: this will tell me if the 'Bid' button was clicked -->
+                {{debugging_message_bid_button}}
+            </form>
         {% endif %}
 
         <p> <!-- Description -->
@@ -42,14 +63,14 @@
                 <form method="post">
                     {% csrf_token %}
                     <input type="text" name="add_or_remove" value="remove" hidden>
-                    <input type="submit" value="Remove from Watchlist">
+                    <input type="submit" name="submit_add_or_remove" value="Remove from Watchlist">
                 </form>
             {% else %}
                 <!-- "Add to Watchlist" button -->
                 <form method="post">
                     {% csrf_token %}
                     <input type="text" name="add_or_remove" value="add" hidden>
-                    <input type="submit" value="Add to Watchlist">
+                    <input type="submit" name="submit_add_or_remove" value="Add to Watchlist">
                 </form>
             {% endif %}
 
