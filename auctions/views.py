@@ -455,6 +455,57 @@ Next, I need to add the code that will be executed if the user clicks on the “
 number is inserted in there into the database on the Bid table. But, for debugging reasons, I could add a message to 
 be printed if the user clicks on “Bid.”
 
+The 3 columns to which I need to insert in the Bid model whenever a user bids for a product are “listing”, “buyer”, and “bid”. 
+Both “listing” and “buyer” are foreign keys. But still, I need to get the proper user and product ID, and insert them into 
+“listing” and “buyer”, respectively. I will get the user ID from “request.user”, since I need the ID of the user that’s currently 
+logged-in, and I need to insert it into “buyer”. As for the “listing” column, I will get the ID of the product that’s being 
+displayed in the current page. That’s stored in the 2nd parameter of the display_listing() view (listing_id).
+
+Finally, for the “bid” column, I will get the number that was typed on the “Your bid” input from the POST form. However, I need 
+to put a set of conditions on it. The user won’t be able to just type any number as the price for their bids. They will have to 
+type a bid that’s equal or higher than the initial bid. Additionally, if another user had already placed a bid on that product, 
+then the current user needs to place a bid that’s larger than the previous user. It wouldn’t make sense if a current user can 
+buy the product if they place the same bid as a previous user who had previously bidded on that item. So, if the current user 
+places a bid larger or equal to the initial bid, and larger than any other previous bid from other users, their bid will be 
+inserted into the Bid model in the “bid” column.
+
+Otherwise, I need to display an error message saying that the bid needs to be higher than any other previous bid, and the bid 
+that was entered in the input box shouldn’t be inserted into the database.
+
+The thing is, I need to be able to differentiate between the initial price and if at least someone else has already placed a 
+bid for a particular product. Otherwise, the “if” statement won’t be able to tell the user if they are able to place a bid 
+that’s exactly the same as the price for that product (the initial bid), or if they are forced to place a bid that’s higher 
+than the price that’s being shown on the page (in the case that another person has already placed a bid on that item).
+
+One way to tell my “if” statement if the user can enter a bid that’s equal to the price being displayed is by checking the Bid 
+table to see if there’s any entry that has the ID of the product that’s currently being displayed on the page. If that product 
+doesn’t have any entry on that table, then the prices being shown on the page is the initial bid. So, the user will be able to 
+place a bid that’s the same (or higher) than the one being displayed on the page. Otherwise, if there’s at least 1 entry on the 
+Bids table for that particular product, they user will not be able to place a bid that’s equal to the price being diplayed on 
+the page. They will only be able to enter a price higher than the one from the bid placed by the previous user. 
+
+Also, the current user will be able to tell if someone has already placed a bid for that product since the page will display the 
+name of the bidder that had placed the previous bid. That way, the user will be able to tell if they can place a bid that’s 
+equal to the price being displayed or not.    
+
+* Note for a future algorithm: once I get all of the bids that have been placed for a specific product, and if the seller wants 
+to close the auction for that item, I will use a Query Set statement that gets all of the bids from the Bid model for that 
+product. Then, I will obtain the bid that has the highest value for the “bid” column. I could use something similar to the 
+“MAX” function from SQL. Then, that would be the winner for that auction.
+
+Remember: I cannot insert anything on any of the 3 columns for the Bids table unless all of the conditions from the “if” 
+statement are met.
+
+To check whether a person has placed a bid on an item, I will count the number of entries for the Bids table for the currently 
+selected product. If it’s 0, then nobody has placed a bid on the current product. Otherwise, at least someone has bidded on the 
+product. To count the number of entries in a table by using Query Set, I need to use the following format: 
+variable = Model_name.objects.filter(column=what_youre_looking_for).count() (source:  Mikhail Chernykh’s reply on 
+https://stackoverflow.com/questions/15635790/how-to-count-the-number-of-rows-in-a-database-table-in-django .)
+
+To avoid any issues when comparing numbers, I will make sure to convert the numbers obtained from the database and the post 
+form into floats. That can be done with the float() function (source: 
+https://www.datacamp.com/community/tutorials/python-data-type-conversion .)
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -473,7 +524,14 @@ def display_listing(request, listing_id):
     bid_form = BidForm()
 
     # DEBUGGING message that will show up if the user clicks on "Bid"
-    debugging_message_bid_button = "You didn't click on the 'Bid' button,"
+    debugging_message_bid_button = "You didn't click on the 'Bid' button."
+
+    # This gets the price of the product of the current page
+    current_product_price = current_listing_instance.initial_price
+
+    # This checks the number of bids that have been placed for the current product, if any
+    number_of_bids = Bids.objects.filter(listing=listing_id).count()
+
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
@@ -538,6 +596,29 @@ def display_listing(request, listing_id):
         elif 'submit_bid' in request.POST:
             debugging_message_bid_button = "Great! You clicked on the 'Bid' button!"
 
+            # This stores the submitted bid on a variable
+            submitted_bid = request.POST["your_bid"]
+
+            # This checks if the user placed a bid that's equal or higher than the price shown on the product page
+            if float(submitted_bid) >= float(current_product_price):
+
+                # This checks if there's at least one bid in the Bids table
+                if number_of_bids > 0:
+
+                    # This checks if the current bid is greater than the previous one
+                    if float(submitted_bid) > float(current_product_price):
+                        debugging_message_bid_button = "Good! Your bid is greater than the one placed by someone else."
+
+                    elif float(submitted_bid) == float(current_product_price):
+                        debugging_message_bid_button = "Sorry. You need to place a higher bid than the previous one."
+
+                # This checks if there are no bids on the Bids table
+                elif number_of_bids == 0:
+                    debugging_message_bid_button = "Awesome! You're the first person to bid on this product!"
+
+            # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
+            else:
+                debugging_message_bid_button = "Sorry, but you need to place a bid that's at least as high as the one currently listed."
 
     
     # Ths will prevent any bugs that won'tlet me show a product's page if I'm not logged in
