@@ -538,6 +538,20 @@ https://stackoverflow.com/questions/2712682/how-to-select-a-record-and-update-it
 BUG FIX: to add an entry into the Bids table, I needed an instance of the Listing class to insert the ID of the 
 current product into the “listing” column (I guess because it’s using a foreign key). That’s done using a Query Set 
 with get(), and inserting that into a variable.
+
+Now, I want to display the name of the bidder for the person who placed the previous bid (if at least one person has 
+bidden for the current product.) For that, I need to call the “buyer” column of the Bids table (using syntax like 
+“bid.buyer” via Django.) But the thing is that I need the name of the person who has the highest bid. I need to look 
+for a Query Set that gets a maximum value from a list of entries for a table (like MAX did in SQL.)
+
+Or, since the maximum bid is the same as the value in “initial_price” on the Listings table, I could check if there’s 
+at least 1 bidder in the Bids table for the current product. If there is, I will check the ID of the bidder for the 
+current product that has bidden for the price being shown on the page (which is stored in the “initial_price” column.)
+
+I will create an empty variable at the start of the display_listing() view, which will store the name of the highest 
+bidder for the current product. It will be initially empty. Then, I will check what I specified in the last paragraph. 
+If I find a bidder, I will store the name of that bidder in a variable, and send it to listing.html to print it.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
