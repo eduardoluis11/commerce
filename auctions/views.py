@@ -506,6 +506,38 @@ To avoid any issues when comparing numbers, I will make sure to convert the numb
 form into floats. That can be done with the float() function (source: 
 https://www.datacamp.com/community/tutorials/python-data-type-conversion .)
 
+Now that the display_listing() view is properly detecting the amount typed by the user on the bid input, I need to 
+modify the database properly by adding entries into the Bids table, and modifying the “initial_price” column of the 
+Listing table with the bid of the current user. If the user types any appropriate bid amount, I will always add an 
+entry on the Bids table. It doesn’t matter if the same person bids multiple times for the same product, as long as 
+their current bid is higher than their previous one. I will also update the “initial_price” column of the Listings 
+table every time that the user types an appropriate bid.
+
+The only thing that I need to pay attention is that, if at least 1 user bids on an item, I will display their name on 
+the page. I will put something like “Current highest bidder: (Name.)” 
+
+To add an entry on the Bids table with the bid placed by the user, I will use a Query Set statement that says “insert 
+the ID of the currently logged in user and of the product of the current page in the ‘buyer’ and ‘listing’ columns. 
+Then, insert the bid from the POST form in the ‘bid’ column.” I may not need to use the “column_name.add(variable)” 
+snippet of code since I’m using foreign keys, not Many to Many relationships. That is, after typing “.save()”, the 
+query should add the entry into the Bids table.
+
+Next, I would have to update the “initial_price” column from the Listings table with the amount from the current bid. 
+I think that a Query Set statement similar to the one in the previous paragraph would work. The only thing that would 
+change would be the column that I should use. 
+
+Actually, I’m wrong: I can’t use the same Query Set for inserting an entry into a table for updating the column of an 
+entry. I need to specify first the exact entry that I want to modify (like by using the “filter” attribute), and then 
+I can update that entry.
+
+To update an entry using Query Set, I need to use the update() function. I would need syntax like the following: 
+Model_name.objects.filter(pk=id_of_entry_I_want_to_modify).update(column='new_value_for_column') 
+(source:  Daniel Roseman’s reply on 
+https://stackoverflow.com/questions/2712682/how-to-select-a-record-and-update-it-with-a-single-queryset-in-django )
+
+BUG FIX: to add an entry into the Bids table, I needed an instance of the Listing class to insert the ID of the 
+current product into the “listing” column (I guess because it’s using a foreign key). That’s done using a Query Set 
+with get(), and inserting that into a variable.
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -541,7 +573,7 @@ def display_listing(request, listing_id):
         # This creates an instance of the User table, which I'll need to use in the Query Set syntax
         user_instance = User.objects.get(id=logged_user_id)
 
-        # This array will store all of the products from a user's watchlist
+        # This array will store all the products from a user's watchlist
         watchlist_array = []
 
         # This will make it so that the "Remove" button won't appear by default, and to prevent a bug that makes 
@@ -608,6 +640,15 @@ def display_listing(request, listing_id):
                     # This checks if the current bid is greater than the previous one
                     if float(submitted_bid) > float(current_product_price):
                         debugging_message_bid_button = "Good! Your bid is greater than the one placed by someone else."
+
+                        # This inserts the bid into the Bids table
+                        insert_bid_into_bids_table = Bids(buyer=user_instance, listing=current_listing_instance,
+                                                          bid=submitted_bid)
+                        insert_bid_into_bids_table.save()  # This saves the entry into the database
+
+                        # This modifies the price of the product on the Listings table
+                        Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+
 
                     elif float(submitted_bid) == float(current_product_price):
                         debugging_message_bid_button = "Sorry. You need to place a higher bid than the previous one."
