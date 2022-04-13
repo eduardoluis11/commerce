@@ -31,6 +31,12 @@
     Actually, after rechecking my code, I had actually manually added the submit buttons. So, I can manually add them
     a different “name” attribute to all the submit buttons.
 
+    The only important thing left is the error message. I technically show an error message if the user types an
+    inappropriate bid. However, I will change its color to red so that it’s clear that it’s an error message. Also,
+    I want to change the messages if the person successfully bids on an item (like showing the message in green.) I
+    can use an “if” statement to tell the page whether to print the red error messages, or the green confirmation
+    messages.
+
     -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
@@ -49,7 +55,20 @@
                 <br>
                 <br>
                 <!-- DEBUGGING message: this will tell me if the 'Bid' button was clicked -->
-                {{debugging_message_bid_button}}
+<!--                {{debugging_message_bid_button}}-->
+
+                <!-- Confirmation or error message -->
+                {% if bid_message != '' %}
+                    {% if bid_message == 'Your bid has been successfully registered!' %}
+                        <p style="color: green;">
+                            {{bid_message}}
+                        </p>
+                    {% else %}
+                        <p style="color: red;">
+                            {{bid_message}}
+                        </p>
+                    {% endif %}
+                {% endif %}
             </form>
         {% endif %}
 

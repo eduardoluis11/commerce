@@ -558,6 +558,9 @@ def display_listing(request, listing_id):
     # DEBUGGING message that will show up if the user clicks on "Bid"
     debugging_message_bid_button = "You didn't click on the 'Bid' button."
 
+    # Confirmation or error message for bids
+    bid_message = ''
+
     # This gets the price of the product of the current page
     current_product_price = current_listing_instance.initial_price
 
@@ -641,6 +644,8 @@ def display_listing(request, listing_id):
                     if float(submitted_bid) > float(current_product_price):
                         debugging_message_bid_button = "Good! Your bid is greater than the one placed by someone else."
 
+                        bid_message = "Your bid has been successfully registered!"
+
                         # This inserts the bid into the Bids table
                         insert_bid_into_bids_table = Bids(buyer=user_instance, listing=current_listing_instance,
                                                           bid=submitted_bid)
@@ -649,13 +654,19 @@ def display_listing(request, listing_id):
                         # This modifies the price of the product on the Listings table
                         Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
 
-
+                    # If the current bid is the same as the previous bid, I'll show an error message
                     elif float(submitted_bid) == float(current_product_price):
-                        debugging_message_bid_button = "Sorry. You need to place a higher bid than the previous one."
+                        debugging_message_bid_button = "Sorry, but you need to place a bid that's higher than the previous one."
+
+                        # Error message
+                        bid_message = "Sorry, but you need to place a bid that's higher than the previous one."
 
                 # This checks if there are no bids on the Bids table
                 elif number_of_bids == 0:
                     debugging_message_bid_button = "Awesome! You're the first person to bid on this product!"
+
+                    # Confirmation message
+                    bid_message = "Your bid has been successfully registered!"
 
                     # This inserts the bid into the Bids table
                     insert_bid_into_bids_table = Bids(buyer=user_instance, listing=current_listing_instance,
@@ -668,6 +679,9 @@ def display_listing(request, listing_id):
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:
                 debugging_message_bid_button = "Sorry, but you need to place a bid that's at least as high as the one currently listed."
+
+                # Error message
+                bid_message = "Sorry, but you need to place a bid that's at least as high as the one currently listed."
 
     
     # Ths will prevent any bugs that won'tlet me show a product's page if I'm not logged in
@@ -685,6 +699,7 @@ def display_listing(request, listing_id):
         "watchlist_array": watchlist_array,
         "display_remove_button": display_remove_button,
         "bid_form": bid_form,
-        "debugging_message_bid_button": debugging_message_bid_button
+        "debugging_message_bid_button": debugging_message_bid_button,
+        "bid_message": bid_message
         # "users_products_in_watchlist": users_products_in_watchlist
     })
