@@ -657,6 +657,14 @@ def display_listing(request, listing_id):
                 elif number_of_bids == 0:
                     debugging_message_bid_button = "Awesome! You're the first person to bid on this product!"
 
+                    # This inserts the bid into the Bids table
+                    insert_bid_into_bids_table = Bids(buyer=user_instance, listing=current_listing_instance,
+                                                      bid=submitted_bid)
+                    insert_bid_into_bids_table.save()  # This saves the entry into the database
+
+                    # This modifies the price of the product on the Listings table
+                    Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:
                 debugging_message_bid_button = "Sorry, but you need to place a bid that's at least as high as the one currently listed."
