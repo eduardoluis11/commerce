@@ -104,6 +104,10 @@
             <br>
             {{current_listing_id}}
 
+            <!-- This will render the "Close Auction" button if the seller of the product enters the page -->
+            {%if display_close_auction_button == True %}
+                <p>Close Auction</p>
+            {% endif %}
         {% endif %}
 
 

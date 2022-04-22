@@ -32,7 +32,10 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" object-ref="schemas/main/tables/auctions_listings" />
+      <object connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" object-ref="schemas/main/tables/auctions_user" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="d810f757-48bf-444e-a7aa-c82b986a79f8" />
@@ -120,7 +123,7 @@
           <session-management value="true" />
           <ddl-file-binding value="true" />
           <database-logging value="true" />
-          <connect-automatically value="true" />
+          <connect-automatically value="false" />
           <restore-workspace value="true" />
           <restore-workspace-deep value="false" />
           <environment-type value="default" />

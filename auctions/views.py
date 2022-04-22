@@ -200,7 +200,7 @@ file: “datetime.now()” (source: https://pythonguides.com/how-to-get-current-
 def create(request):
     form = CreateListingForm()  # Form from forms.py to create a new listing
 
-    logged_user = request.user      # This stored the data from the currently logged in user
+    logged_user = request.user      # This stores the data from the currently logged in user
     logged_user_id = logged_user.id     # PK of the currently logged in user
 
     # This creates an instance of the User table, which I'll need to use in the Query Set syntax
@@ -552,6 +552,35 @@ I will create an empty variable at the start of the display_listing() view, whic
 bidder for the current product. It will be initially empty. Then, I will check what I specified in the last paragraph. 
 If I find a bidder, I will store the name of that bidder in a variable, and send it to listing.html to print it.
 
+The part of making the list inactive once the seller clicks on a button on their own listing can be relatively 
+simple to do. The problem will be choosing the highest bidder and setting them as the winner of the auction.
+
+So, I will first turn the product for a particular listing to become inactive when the seller presses a button to 
+close the auction. If it’s inactive, I’m planning on hiding the listing from the “Active Listings” page.
+
+To make the button clickable and make something happen to occur, I would need to use a “Submit” button by using a POST 
+form. Remember to give a different ID to that submit button compared to the other buttons in the product page. That 
+button will say something like “Close Auction”. Then, after the user clicks it, the views.py file will get that 
+request, and do something. 
+
+I could create a new view for adding the functionality that closes the auction if the seller clicks on the “close 
+auction” button. 
+
+Remember, only the seller should see the “close auction” button. So, I’ll have to put a condition saying that the user 
+must be logged in by using the decorator that checks if a user is logged in on top of the “close auction” view. Then, 
+I need to put an extra condition saying that the “close auction” button should only appear if the ID of the user is 
+the same as the ID of the seller of that particular product.
+
+After further consideration, I see that I SHOULDN’T create a new view for closing the auction. Otherwise, I would need 
+to create a new URL, and add it on the urls.py file. And the thing is that I want to display all of this in the 
+listing.html page. So, I will need to add the functionality for closing the auction inside of the display_listing() 
+view.
+
+The first important task will be to ONLY render the “Close auction” button if that product’s seller is logged in. I 
+can do that by sending a variable from the display_listing() view to the listing.html file, and using an “if” 
+statement in the listing.html file. I will check that, if the seller for the current product is logged in, I will 
+render the “Close auction” button.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -581,6 +610,8 @@ def display_listing(request, listing_id):
     # This checks the number of bids that have been placed for the current product, if any
     number_of_bids = Bids.objects.filter(listing=listing_id).count()
 
+    # This will tell the product page whether to render the "Close auction" button
+    display_close_auction_button = False
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
@@ -589,6 +620,15 @@ def display_listing(request, listing_id):
 
         # This creates an instance of the User table, which I'll need to use in the Query Set syntax
         user_instance = User.objects.get(id=logged_user_id)
+
+        # This stores the seller ID of the current product
+        current_product_seller_id = current_listing_instance.seller_id_id
+
+        # This checks if the current user is the seller of the current product
+        if logged_user_id == current_product_seller_id:
+
+            # If the condition applies, I will render the button
+            display_close_auction_button = True
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
@@ -698,7 +738,7 @@ def display_listing(request, listing_id):
                 bid_message = "Sorry, but you need to place a bid that's at least as high as the one currently listed."
 
     
-    # Ths will prevent any bugs that won'tlet me show a product's page if I'm not logged in
+    # Ths will prevent any bugs that won't let me show a product's page if I'm not logged in
     else:
         watchlist_array = []
         display_remove_button = False
@@ -714,6 +754,7 @@ def display_listing(request, listing_id):
         "display_remove_button": display_remove_button,
         "bid_form": bid_form,
         "debugging_message_bid_button": debugging_message_bid_button,
-        "bid_message": bid_message
+        "bid_message": bid_message,
+        "display_close_auction_button": display_close_auction_button
         # "users_products_in_watchlist": users_products_in_watchlist
     })
