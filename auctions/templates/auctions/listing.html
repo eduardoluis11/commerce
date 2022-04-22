@@ -37,6 +37,13 @@
     can use an “if” statement to tell the page whether to print the red error messages, or the green confirmation
     messages.
 
+    BUG: The seller of the current product can bid for his own product, which doesn’t make any sense. I will edit my
+    code so that the bid form gest hidden if the seller enters a product page of one of their own products.
+
+	To fix it, I will go to the listing.html file, and put the opposite condition that I put for the “Close Auction”
+	text: that if the user that has entered the product page is not the seller of that product, I will render the bid
+	form.
+
     -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
@@ -45,31 +52,33 @@
             <b>Current Bid:</b> ${{listing_data.initial_price}}
         </p>
 
-        <!-- Form that will get the buyer's bid. Only logged users will be able to see it -->
+        <!-- Form that will get the buyer's bid. Only logged users other than the seller will be able to see it -->
         {% if user.is_authenticated %}
-            <form method="post">
-                {% csrf_token %}
-                {{bid_form}}
-                <br>
-                <input class="btn btn-primary" type="submit" name="submit_bid" value="Bid">
-                <br>
-                <br>
-                <!-- DEBUGGING message: this will tell me if the 'Bid' button was clicked -->
-<!--                {{debugging_message_bid_button}}-->
+            {% if display_close_auction_button == False %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{bid_form}}
+                    <br>
+                    <input class="btn btn-primary" type="submit" name="submit_bid" value="Bid">
+                    <br>
+                    <br>
+                    <!-- DEBUGGING message: this will tell me if the 'Bid' button was clicked -->
+    <!--                {{debugging_message_bid_button}}-->
 
-                <!-- Confirmation or error message -->
-                {% if bid_message != '' %}
-                    {% if bid_message == 'Your bid has been successfully registered!' %}
-                        <p style="color: green;">
-                            {{bid_message}}
-                        </p>
-                    {% else %}
-                        <p style="color: red;">
-                            {{bid_message}}
-                        </p>
+                    <!-- Confirmation or error message -->
+                    {% if bid_message != '' %}
+                        {% if bid_message == 'Your bid has been successfully registered!' %}
+                            <p style="color: green;">
+                                {{bid_message}}
+                            </p>
+                        {% else %}
+                            <p style="color: red;">
+                                {{bid_message}}
+                            </p>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            </form>
+                </form>
+            {% endif %}
         {% endif %}
 
         <p> <!-- Description -->
