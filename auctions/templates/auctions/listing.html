@@ -162,6 +162,12 @@
             {%endif%}
         {% endfor %}
 
+        <!-- DEBUGGING MESSAGE: This shows the ID of the highest bidder -->
+        <p>
+            The highest bidder is: {{highest_bidder_id}}
+        </p>
+        <br>
+
         <!-- Listing image -->
         <img src="{{listing_data.picture_url}}" width="500rem" alt="{{listing_data.product_name}}'s picture">
     {% endfor %}

@@ -626,6 +626,17 @@ def display_listing(request, listing_id):
     # This will make the "Close Auction" button to be active if the seller hasn't closed the auction
     is_close_auction_button_active = True
 
+    # This takes the highest bidder from the Bids model ...
+    highest_bidder_id = "There's nothing stored as a highest bidder ID."
+    if number_of_bids > 0:
+
+        # This stores an instance of a bid where the amount bid is equal to the price displayed on the product page
+        highest_bid_instance = Bids.objects.get(bid=current_product_price)
+
+        # This stores the ID of the highest bidder
+        highest_bidder_id = highest_bid_instance.buyer
+
+
     # This will check the database to decide whether to activate the "Close Auction" button
     if is_listing_active:
         is_close_auction_button_active = True
@@ -654,7 +665,7 @@ def display_listing(request, listing_id):
             # If the condition applies, I will render the button
             display_close_auction_button = True
 
-            # This executes if the user clicks on "Close Auction" ...
+            # This executes if the user clicks on "Close Auction"
             if 'close_auction' in request.POST:
 
                 # This sets the current listing to become inactive
@@ -790,6 +801,7 @@ def display_listing(request, listing_id):
         "bid_message": bid_message,
         "display_close_auction_button": display_close_auction_button,
         "is_close_auction_button_active": is_close_auction_button_active,
-        "debugging_message_active_status": debugging_message_active_status
+        "debugging_message_active_status": debugging_message_active_status,
+        "highest_bidder_id": highest_bidder_id
         # "users_products_in_watchlist": users_products_in_watchlist
     })
