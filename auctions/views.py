@@ -589,6 +589,7 @@ Now, to make the highest bidder the winner of the auction, I will first get from
 bidder. Then, I will display their name once they win the auction. This will be relatively complicated, since I need 
 to get the data from the Bid model to get the bidder with the highest bid.
 
+For debugging purposes, I will store the name of the auction winner in a variable, and print it on the listing page.
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -643,6 +644,11 @@ def display_listing(request, listing_id):
         # This stores the name of the highest bidder
         highest_bidder_id = highest_bid_instance.buyer
 
+        # This will print the name of an auction's winner
+        if highest_bid_instance.is_auction_winner:
+            auction_winner_name = highest_bidder_id
+
+
         # This updates Bids table so that the highest bidder is inserted into the database ...
         # Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
 
@@ -684,7 +690,7 @@ def display_listing(request, listing_id):
                 is_close_auction_button_active = False
 
                 # This stores the winner of the auction
-                auction_winner_name = highest_bidder_id
+                # auction_winner_name = highest_bidder_id
 
                 # This updates Bids table so that the highest bidder is inserted into the database ...
                 Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
@@ -817,6 +823,7 @@ def display_listing(request, listing_id):
         "display_close_auction_button": display_close_auction_button,
         "is_close_auction_button_active": is_close_auction_button_active,
         "debugging_message_active_status": debugging_message_active_status,
-        "highest_bidder_id": highest_bidder_id
+        "highest_bidder_id": highest_bidder_id,
+        "auction_winner_name": auction_winner_name
         # "users_products_in_watchlist": users_products_in_watchlist
     })
