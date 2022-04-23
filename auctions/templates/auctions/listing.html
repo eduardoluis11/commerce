@@ -44,6 +44,10 @@
 	text: that if the user that has entered the product page is not the seller of that product, I will render the bid
 	form.
 
+	I will modify the button after clicking on “Close Auction” so that the button gets disabled and gray to indicate
+	the user that they closed the auction successfully. I can change the color to gray (or inactive looking) by using
+	the “disabled” attribute in Bootstrap (source: https://getbootstrap.com/docs/4.4/components/buttons/ .)
+
     -->
     {% for listing_data in current_listing %}
         <h2>{{listing_data.product_name}}</h2>
@@ -115,11 +119,18 @@
 
             <!-- This will render the "Close Auction" button if the seller of the product enters the page -->
             {%if display_close_auction_button == True %}
-                <form method="post">
-                    {% csrf_token %}
-                    <input class="btn btn-primary" type="submit" name="close_auction" value="Close Auction">
-                </form>
 
+                {% if is_close_auction_button_active == True %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" name="close_auction" value="Close Auction">
+                    </form>
+            
+                <!-- This will display an inactive button if the seller closes the auction -->
+                {% else %}
+                    <button class="btn btn-secondary" disabled>Closed Auction</button>
+                
+                {% endif %}
                 <!-- <p>Close Auction</p>-->
             {% endif %}
         {% endif %}

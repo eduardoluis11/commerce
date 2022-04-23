@@ -617,6 +617,9 @@ def display_listing(request, listing_id):
     # This will tell the product page whether to render the "Close auction" button
     display_close_auction_button = False
 
+    # This will make the "Close Auction" button to be active if the seller hasn't closed the auction
+    is_close_auction_button_active = True
+
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
         logged_user = request.user      # This stored the data from the currently logged in user
@@ -639,6 +642,9 @@ def display_listing(request, listing_id):
 
                 # This sets the current listing to become inactive
                 Listings.objects.filter(pk=listing_id).update(active=False)
+
+                # This disables the "Close Auction" button
+                is_close_auction_button_active = False
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
@@ -765,6 +771,7 @@ def display_listing(request, listing_id):
         "bid_form": bid_form,
         "debugging_message_bid_button": debugging_message_bid_button,
         "bid_message": bid_message,
-        "display_close_auction_button": display_close_auction_button
+        "display_close_auction_button": display_close_auction_button,
+        "is_close_auction_button_active": is_close_auction_button_active
         # "users_products_in_watchlist": users_products_in_watchlist
     })
