@@ -617,8 +617,25 @@ def display_listing(request, listing_id):
     # This will tell the product page whether to render the "Close auction" button
     display_close_auction_button = False
 
+    # Debugging message to check if I'm getting the active status from the Listings model
+    debugging_message_active_status = "Nothing has happened."
+
+    # This will check if the current listing is active
+    is_listing_active = current_listing_instance.active
+
     # This will make the "Close Auction" button to be active if the seller hasn't closed the auction
     is_close_auction_button_active = True
+
+    # This will check the database to decide whether to activate the "Close Auction" button
+    if is_listing_active:
+        is_close_auction_button_active = True
+
+        debugging_message_active_status = "This listing is currently active."
+
+    else:
+        is_close_auction_button_active = False
+
+        debugging_message_active_status = "This listing is NOT active."
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
@@ -772,6 +789,7 @@ def display_listing(request, listing_id):
         "debugging_message_bid_button": debugging_message_bid_button,
         "bid_message": bid_message,
         "display_close_auction_button": display_close_auction_button,
-        "is_close_auction_button_active": is_close_auction_button_active
+        "is_close_auction_button_active": is_close_auction_button_active,
+        "debugging_message_active_status": debugging_message_active_status
         # "users_products_in_watchlist": users_products_in_watchlist
     })
