@@ -644,7 +644,7 @@ def display_listing(request, listing_id):
         highest_bidder_id = highest_bid_instance.buyer
 
         # This updates Bids table so that the highest bidder is inserted into the database ...
-        Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
+        # Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
 
     # This will check the database to decide whether to activate the "Close Auction" button
     if is_listing_active:
@@ -685,6 +685,9 @@ def display_listing(request, listing_id):
 
                 # This stores the winner of the auction
                 auction_winner_name = highest_bidder_id
+
+                # This updates Bids table so that the highest bidder is inserted into the database ...
+                Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
