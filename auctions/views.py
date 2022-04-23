@@ -630,6 +630,10 @@ def display_listing(request, listing_id):
             # If the condition applies, I will render the button
             display_close_auction_button = True
 
+            # This executes if the user clicks on "Close Auction" ...
+            if 'close_auction' in request.POST:
+                pass
+
         # This array will store all the products from a user's watchlist
         watchlist_array = []
 

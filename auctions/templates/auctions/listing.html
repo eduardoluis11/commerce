@@ -91,14 +91,14 @@
                 <form method="post">
                     {% csrf_token %}
                     <input type="text" name="add_or_remove" value="remove" hidden>
-                    <input type="submit" name="submit_add_or_remove" value="Remove from Watchlist">
+                    <input class="btn btn-primary" type="submit" name="submit_add_or_remove" value="Remove from Watchlist">
                 </form>
             {% else %}
                 <!-- "Add to Watchlist" button -->
                 <form method="post">
                     {% csrf_token %}
                     <input type="text" name="add_or_remove" value="add" hidden>
-                    <input type="submit" name="submit_add_or_remove" value="Add to Watchlist">
+                    <input class="btn btn-primary" type="submit" name="submit_add_or_remove" value="Add to Watchlist">
                 </form>
             {% endif %}
 
@@ -115,7 +115,12 @@
 
             <!-- This will render the "Close Auction" button if the seller of the product enters the page -->
             {%if display_close_auction_button == True %}
-                <p>Close Auction</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" name="close_auction" value="Close Auction">
+                </form>
+
+                <!-- <p>Close Auction</p>-->
             {% endif %}
         {% endif %}
 
