@@ -243,12 +243,20 @@ bid can only belong to one specific listing. So, there was a one-to-many relatio
 something similar occurs between users and and bids: one user can make multiple bids, but one specific bid can only 
 belong to one specific user. So, there's also a one-to-many relationship between bids and users. Therefore, I need 
 to use the ForeignKey() function for calling the PK of both the listings and the users. I shouldn't use the 
-ManyToManyField() function.  
+ManyToManyField() function.
+
+I think I will need to modify the Bids model to store the winner of the auction. I need to keep a permanent record of 
+the winner of an auction, so I will need to insert that information into the database. Since each entry in the Bids 
+table already has the name of the bidder, I could add a Boolean column that will store whether the current bidder is 
+the winner of that auction. It will be “False” by default. But, if the seller closes the auction, I will update the 
+highest bid to have the column that indicates whether that user has won the auction to “True”.  
+
 """
 class Bids(models.Model):
     listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="bids_from_listing", default=0)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids_from_user", default=0)
     bid = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    is_auction_winner = models.BooleanField(default=False)
 
 
 

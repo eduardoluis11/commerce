@@ -32,19 +32,27 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" object-ref="schemas/main/tables/auctions_bids" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="d810f757-48bf-444e-a7aa-c82b986a79f8" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_bids" active-filter-id="">
+    <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_watchlists" active-filter-id="d1683682-8e8b-4058-8cd1-cb7078554f40">
+      <filter id="d1683682-8e8b-4058-8cd1-cb7078554f40" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="id" operator="=" value="" active="true" />
+      </filter>
+    </filter-actions>
+    <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_bids" active-filter-id="EMPTY_FILTER">
       <filter id="78577cad-bdb0-4645-8b25-c5823b63715f" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="id" operator="=" value="" active="true" />
       </filter>
     </filter-actions>
     <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_listings" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_user" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="d810f757-48bf-444e-a7aa-c82b986a79f8" dataset="main.auctions_categories" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">
     <last-used-providers />

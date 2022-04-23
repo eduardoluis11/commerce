@@ -585,6 +585,10 @@ Now that I’m detecting if the user has clicked on the “Close Auction” butt
 the Listings model that says whether as listing is active. I will change it to False. The property is called “active”, 
 I have to update it to False. I need to use a Query set statement.	
 
+Now, to make the highest bidder the winner of the auction, I will first get from the database who’s the highest 
+bidder. Then, I will display their name once they win the auction. This will be relatively complicated, since I need 
+to get the data from the Bid model to get the bidder with the highest bid.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -626,16 +630,21 @@ def display_listing(request, listing_id):
     # This will make the "Close Auction" button to be active if the seller hasn't closed the auction
     is_close_auction_button_active = True
 
-    # This takes the highest bidder from the Bids model ...
+    # This declares the variable that will store the name of the winner of an auction
+    auction_winner_name = "Nobody has won the auction yet."
+
+    # This takes the highest bidder from the Bids model
     highest_bidder_id = "There's nothing stored as a highest bidder ID."
     if number_of_bids > 0:
 
         # This stores an instance of a bid where the amount bid is equal to the price displayed on the product page
         highest_bid_instance = Bids.objects.get(bid=current_product_price)
 
-        # This stores the ID of the highest bidder
+        # This stores the name of the highest bidder
         highest_bidder_id = highest_bid_instance.buyer
 
+        # This updates Bids table so that the highest bidder is inserted into the database ...
+        Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
 
     # This will check the database to decide whether to activate the "Close Auction" button
     if is_listing_active:
@@ -665,7 +674,7 @@ def display_listing(request, listing_id):
             # If the condition applies, I will render the button
             display_close_auction_button = True
 
-            # This executes if the user clicks on "Close Auction"
+            # This executes if the user clicks on "Close Auction", and closes the auction
             if 'close_auction' in request.POST:
 
                 # This sets the current listing to become inactive
@@ -673,6 +682,9 @@ def display_listing(request, listing_id):
 
                 # This disables the "Close Auction" button
                 is_close_auction_button_active = False
+
+                # This stores the winner of the auction
+                auction_winner_name = highest_bidder_id
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
