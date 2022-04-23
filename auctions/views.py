@@ -581,6 +581,10 @@ can do that by sending a variable from the display_listing() view to the listing
 statement in the listing.html file. I will check that, if the seller for the current product is logged in, I will 
 render the “Close auction” button.
 
+Now that I’m detecting if the user has clicked on the “Close Auction” button, I will need to change the property from 
+the Listings model that says whether as listing is active. I will change it to False. The property is called “active”, 
+I have to update it to False. I need to use a Query set statement.	
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -632,7 +636,9 @@ def display_listing(request, listing_id):
 
             # This executes if the user clicks on "Close Auction" ...
             if 'close_auction' in request.POST:
-                pass
+
+                # This sets the current listing to become inactive
+                Listings.objects.filter(pk=listing_id).update(active=False)
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
