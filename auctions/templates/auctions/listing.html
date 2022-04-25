@@ -194,7 +194,11 @@
     <!-- I need to first let users to be able to type comments before storing those comments in the database. To do
     that, I need to add a <textarea> tag on the listing.html file. I will also need to add a POST form, so that users
     can click on a “submit” button to send that comment into the database. I also need to include the <textarea> tag
-    within the POST form.  -->
+    within the POST form.
+
+    To print the comments on their respective listing page, I will need to use a “for” loop. I also have to make sure
+    to print the correct comment on the correct product page. I will also print the username of the user that made
+    each comment.-->
 
     <!-- This will let users type comments -->
     <form method="post">
@@ -204,6 +208,18 @@
         <br>
         <input class="btn btn-primary" type="submit" name="submit_comment" value="Comment">
     </form>
+    <br>
+    <br>
+
+    <!-- This will print all the comments for the current listing -->
+    <h3>Comments:</h3>
+    <br>
+    <br>
+
+    {% for comment in current_listing_comments %}
+        <p><b>{{comment.user}}</b></p>
+        <p>{{comment.comment}}</p>
+    {% endfor %}
 
 
 

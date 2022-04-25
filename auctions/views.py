@@ -864,6 +864,8 @@ def display_listing(request, listing_id):
         insert_comment = Comments(comment=comment, user=user_instance, listing=current_listing_instance)
         insert_comment.save()
 
+    # This will obtain all the comments for the current listing
+    current_listing_comments = Comments.objects.filter(listing=listing_id)
 
 
 
@@ -884,6 +886,7 @@ def display_listing(request, listing_id):
         "auction_winner_name": auction_winner_name,
         "victory_message": victory_message,
         "comment_form": comment_form,
+        "current_listing_comments": current_listing_comments,
         # "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })
