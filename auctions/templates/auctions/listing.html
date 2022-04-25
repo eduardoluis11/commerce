@@ -176,9 +176,11 @@
         {% endfor %}
 
         <!-- This shows the name of the highest bidder -->
-        <p>
-            The highest bidder is: {{highest_bidder_id}}
-        </p>
+        {% if highest_bidder_id != "No one has bid for this listing yet." %}
+            <p>
+                The highest bidder is: {{highest_bidder_id}}
+            </p>
+        {% endif %}
         <br>
 
         <!-- This prints the name of an auction's winner -->
