@@ -39,6 +39,14 @@ def index(request):
         "listings": Listings.objects.all()
     })
 
+""" This will display all of the closed auctions
+
+"""
+def inactive_listings(request):
+    return render(request, "auctions/inactive_listings.html", {
+        "listings": Listings.objects.all()
+    })
+
 
 def login_view(request):
     if request.method == "POST":
