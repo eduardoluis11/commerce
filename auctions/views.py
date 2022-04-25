@@ -864,6 +864,6 @@ def display_listing(request, listing_id):
         "highest_bidder_id": highest_bidder_id,
         "auction_winner_name": auction_winner_name,
         "victory_message": victory_message,
-        "logged_user_username": logged_user_username
+        # "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })

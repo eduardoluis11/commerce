@@ -20,7 +20,13 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
+
             {% if user.is_authenticated %}
+
+                <!-- This adds a link to all the closed auctions -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inactive_listings' %}">Closed Auctions</a>
+                </li>
 
                 <!-- This will send the user to the page that will let them create a new listing. It will only
                  render if the user is logged in. -->
