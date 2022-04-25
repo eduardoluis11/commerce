@@ -201,15 +201,17 @@
     each comment.-->
 
     <!-- This will let users type comments -->
-    <form method="post">
-        {% csrf_token %}
-        {{comment_form.comment}}
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{comment_form.comment}}
+            <br>
+            <br>
+            <input class="btn btn-primary" type="submit" name="submit_comment" value="Comment">
+        </form>
         <br>
         <br>
-        <input class="btn btn-primary" type="submit" name="submit_comment" value="Comment">
-    </form>
-    <br>
-    <br>
+    {% endif %}
 
     <!-- This will print all the comments for the current listing -->
     <h3>Comments:</h3>
