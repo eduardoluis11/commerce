@@ -890,3 +890,25 @@ def display_listing(request, listing_id):
         # "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })
+
+""" This is the view for the Watchlist page. This is really similar to the index page, that is, the page that displays 
+the active listings. The difference is that, instead of displaying all of the active listings, I will only display the 
+products from the watchlist of the user that’s currently logged in.
+
+The first thing that I need to do is to create the page that will display the Watchlists. I need to create the html 
+file for the page. I will also have to include in the layout of the site (in layout.html) a link to the watchlists 
+page, which will only be accessible users who have logged in. I will also need to add a link to the page in urls.py to 
+the Watchlist page. Additionally, I will need to create a view function to display the watchlist.
+
+"""
+@login_required
+def watchlist(request):
+    # watchlist_products = Watchlists.objects.filter()
+
+    # DEBUGGING message: this is just to display the page
+    watchlist_products = "This is your watchlist."
+
+
+    return render(request, "auctions/watchlist.html", {
+        "watchlist_products": watchlist_products,
+    })

@@ -10,6 +10,8 @@ listing.
  views.py field (if I’m not mistaken), and then insert it into the “<str” keyword in urls.py.
  
  The 'inactive' link will send the users to a list of all the closed auctions.
+ 
+ The 'watchlist' link will send the users to their watchlist
 """
 urlpatterns = [
     path("", views.index, name="index"),
@@ -19,5 +21,6 @@ urlpatterns = [
     path("create", views.create, name="create"),
     path("listing/<str:listing_id>", views.display_listing, name="display_listing"),
     path("inactive", views.inactive_listings, name="inactive_listings"),
+    path("watchlist", views.watchlist, name="watchlist"),
 
 ]
