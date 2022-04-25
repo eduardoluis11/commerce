@@ -111,6 +111,17 @@
                 {% endif %}
             {% endif %}
 
+            <!-- This will print the victory message if the current auction's winner is currently logged in -->
+            <p style="color: green;">
+                {{victory_message}}
+            </p>
+
+            <!-- DEBUGGING MESSAGE: this should display the name of the user that's currently logged in -->
+            <p>
+                <b>The username of the user that's currently logged in is: {{logged_user_username}}</b>
+            </p>
+            
+
             <!-- DEBUGGING MESSAGE -->
 <!--            {% for product in watchlist_array %}-->
 <!--                {{product}}-->

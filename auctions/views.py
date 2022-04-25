@@ -590,6 +590,17 @@ bidder. Then, I will display their name once they win the auction. This will be 
 to get the data from the Bid model to get the bidder with the highest bid.
 
 For debugging purposes, I will store the name of the auction winner in a variable, and print it on the listing page.
+
+To make the homework assignment easier, I will create a separate page that will display the closed listings. That way, 
+I’ll be able to easily find closed listings (since they should disappear from the “Active Listings” page), and I’ll 
+be able to easily display a message to the highest bidder telling them that they won the auction (if they enter into 
+that product page.)
+
+But first, before creating a new page and a new URL, I will show the auction’s winner a victory message if they are 
+logged in in the closed listing’s page. I will need to compare the name of the currently logged in user, and the name 
+of the auction’s winner. If they are the same, I will display the victory message. The column of the User model that 
+stores the names of the users is “username”.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -634,6 +645,9 @@ def display_listing(request, listing_id):
     # This declares the variable that will store the name of the winner of an auction
     auction_winner_name = "Nobody has won the auction yet."
 
+    # This declares the variable that will store the victory message for the winner of an auction
+    victory_message = ''
+
     # This takes the highest bidder from the Bids model
     highest_bidder_id = "There's nothing stored as a highest bidder ID."
     if number_of_bids > 0:
@@ -649,7 +663,7 @@ def display_listing(request, listing_id):
             auction_winner_name = highest_bidder_id
 
 
-        # This updates Bids table so that the highest bidder is inserted into the database ...
+        # This updates Bids table so that the highest bidder is inserted into the database 
         # Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
 
     # This will check the database to decide whether to activate the "Close Auction" button
@@ -665,8 +679,11 @@ def display_listing(request, listing_id):
 
     # If the user is logged in, I will store their ID
     if request.user.is_authenticated:
-        logged_user = request.user      # This stored the data from the currently logged in user
+        logged_user = request.user      # This stores the data from the currently logged in user
         logged_user_id = logged_user.id     # PK of the currently logged in user
+
+        # This stores the username of the user that's currently logged in
+        logged_user_username = logged_user.username
 
         # This creates an instance of the User table, which I'll need to use in the Query Set syntax
         user_instance = User.objects.get(id=logged_user_id)
@@ -692,8 +709,21 @@ def display_listing(request, listing_id):
                 # This stores the winner of the auction
                 # auction_winner_name = highest_bidder_id
 
-                # This updates Bids table so that the highest bidder is inserted into the database ...
+                # This updates Bids table so that the highest bidder is inserted into the database 
                 Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
+
+        # This will check if somebody won the current auction
+        if auction_winner_name != "Nobody has won the auction yet.":
+            
+            # This will check if the winner of the auction is currently logged in
+            if str(auction_winner_name) == str(logged_user_username):
+
+                # This will print a message telling the auction's winner that they won the auction
+                victory_message = "Congrats! You have won the auction for the current listing."
+
+            # DEBUGGING message
+            else:
+                victory_message = "Sorry. You're not the winner of this auction."
 
         # This array will store all the products from a user's watchlist
         watchlist_array = []
@@ -824,6 +854,8 @@ def display_listing(request, listing_id):
         "is_close_auction_button_active": is_close_auction_button_active,
         "debugging_message_active_status": debugging_message_active_status,
         "highest_bidder_id": highest_bidder_id,
-        "auction_winner_name": auction_winner_name
+        "auction_winner_name": auction_winner_name,
+        "victory_message": victory_message,
+        "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })
