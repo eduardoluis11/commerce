@@ -665,7 +665,7 @@ def display_listing(request, listing_id):
     victory_message = ''
 
     # This takes the highest bidder from the Bids model
-    highest_bidder_id = "There's nothing stored as a highest bidder ID."
+    highest_bidder_id = "No one has bid for this listing yet."
     if number_of_bids > 0:
 
         # This stores an instance of a bid where the amount bid is equal to the price displayed on the product page

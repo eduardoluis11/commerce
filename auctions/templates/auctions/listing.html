@@ -137,7 +137,7 @@
             {% if display_close_auction_button == True %}
 
                 <!-- DEBUGGING message -->
-                {{debugging_message_active_status}}
+<!--                {{debugging_message_active_status}}-->
 
                 {% if is_close_auction_button_active == True %}
                     <form method="post">
@@ -173,16 +173,18 @@
             {%endif%}
         {% endfor %}
 
-        <!-- DEBUGGING MESSAGE: This shows the name of the highest bidder -->
+        <!-- This shows the name of the highest bidder -->
         <p>
             The highest bidder is: {{highest_bidder_id}}
         </p>
         <br>
 
-        <!-- DEBUGGING MESSAGE: This prints the name of an auction's winner -->
-        <p>
-            The winner of the auction is: {{auction_winner_name}}
-        </p>
+        <!-- This prints the name of an auction's winner -->
+        {% if auction_winner_name != "Nobody has won the auction yet." %}
+            <p>
+                The winner of the auction is: {{auction_winner_name}}
+            </p>
+        {% endif %}
 
         <!-- Listing image -->
         <img src="{{listing_data.picture_url}}" width="500rem" alt="{{listing_data.product_name}}'s picture">
