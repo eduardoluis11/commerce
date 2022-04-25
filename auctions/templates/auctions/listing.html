@@ -112,9 +112,11 @@
             {% endif %}
 
             <!-- This will print the victory message if the current auction's winner is currently logged in -->
-            <p style="color: green;">
-                {{victory_message}}
-            </p>
+            {% if victory_message != "Sorry. You're not the winner of this auction." %}
+                <p style="color: green;">
+                    {{victory_message}}
+                </p>
+            {% endif %}
 
             <!-- DEBUGGING MESSAGE: this should display the name of the user that's currently logged in -->
 <!--            <p>-->
