@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required
 https://docs.djangoproject.com/en/4.0/topics/forms/ . I'm also adding the form that allows me to get the bids from
 buyers. )
 """
-from .forms import CreateListingForm, BidForm
+from .forms import CreateListingForm, BidForm, CommentForm
 
 from .models import User
 
@@ -626,6 +626,9 @@ def display_listing(request, listing_id):
     # This imports the form that will store the bids
     bid_form = BidForm()
 
+    # This imports the form that stores the comments
+    comment_form = CommentForm()
+
     # DEBUGGING message that will show up if the user clicks on "Bid"
     debugging_message_bid_button = "You didn't click on the 'Bid' button."
 
@@ -864,6 +867,7 @@ def display_listing(request, listing_id):
         "highest_bidder_id": highest_bidder_id,
         "auction_winner_name": auction_winner_name,
         "victory_message": victory_message,
+        "comment_form": comment_form,
         # "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })

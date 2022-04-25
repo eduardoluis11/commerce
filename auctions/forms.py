@@ -125,3 +125,8 @@ I will, for the time being, call the input that stores the bid "Your Bid".
 """
 class BidForm(forms.Form):
     your_bid = forms.DecimalField(max_digits=12, decimal_places=2)
+
+""" This form will let users type comments on the listings
+"""
+class CommentForm(forms.Form):
+    comment = forms.CharField(max_length=5000, widget=forms.Textarea, required=False)
