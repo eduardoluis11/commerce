@@ -609,6 +609,11 @@ logged in in the closed listing’s page. I will need to compare the name of the
 of the auction’s winner. If they are the same, I will display the victory message. The column of the User model that 
 stores the names of the users is “username”.
 
+I will later also need to display all of the comments stored in the database within the current product page. But, 
+to do that, I will need to modify the display_listing() view to be able to get the comments from the POST form, and 
+store them on the database. THEN I will send the comments via Jinja to the current product page (the listing.html 
+file.)
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -848,6 +853,17 @@ def display_listing(request, listing_id):
     else:
         watchlist_array = []
         display_remove_button = False
+
+    # This executes if the user clicks on "Comment"
+    if 'submit_comment' in request.POST:
+
+        # This gets the comment from the POST form
+        comment = request.POST["comment"]
+
+        # This inserts the comment into the database, on the Comments model
+        insert_comment = Comments(comment=comment, user=user_instance, listing=current_listing_instance)
+        insert_comment.save()
+
 
 
 
