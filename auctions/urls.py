@@ -2,6 +2,17 @@ from django.urls import path
 
 from . import views
 
+""" Now, I need to create the Admin panel. To do that, I need to review Brian’s lecture. I will need to add some 
+code to add a library that will let me create the admin panel.
+
+I don’t have the default URL for “admin” in urls.py. I will have to add it. I don’t even have the “admin” library 
+imported in the urls.py file. I will have to add both things.
+
+"""
+# This imports the library to let me use the Admin panel (source: Brian's lecture for this assignment)
+from django.contrib import admin
+
+
 """ I added a path called "create", which will redirect the user to the "/create" page so that they can create a new
 listing.
 
@@ -12,8 +23,11 @@ listing.
  The 'inactive' link will send the users to a list of all the closed auctions.
  
  The 'watchlist' link will send the users to their watchlist
+ 
+ The 'admin' link will send me to the admin panel (source: Brian's lecture for this assignment.)
 """
 urlpatterns = [
+    path("admin", admin.site.urls),
     path("", views.index, name="index"),
     path("login", views.login_view, name="login"),
     path("logout", views.logout_view, name="logout"),
