@@ -975,3 +975,26 @@ def categories(request):
     return render(request, "auctions/categories.html", {
         "category_list": category_list,
     })
+
+""" This will show the page that displays all of the active listings for a specific category.
+
+Once again, I need to create a view, a URL, and an HTML file. The URL should be similar to that as the one used for 
+the display_listing() view, since there will be a different page for each specific category. The URL could be something 
+like “/categories/1”, or “categories/Fashion”. The latter would make it easier for users to bookmark the page, or to 
+type directly into the URL their favorite category. However, since I don’t know if I made unique each instance of the 
+name of the category, I will play it safe and use the ID of each category, and display it in the URL. So, basically, I 
+will make the URL for the specific categories really similar to the display_listing() view.
+
+The page that shows all of the active listings for a specific category will be really similar to the index.html file 
+(the Active Listings page.) In fact, it will be the same, except that it will only display the listings that belong to 
+a specific category.
+
+"""
+def category_listings(request, category_id):
+
+    # This will store all the active listings for the current category
+    products_in_selected_category = "This will display all of the listings for the current category."
+
+    return render(request, "auctions/category_listings.html", {
+        "products_in_selected_category": products_in_selected_category,
+    })

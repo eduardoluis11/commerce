@@ -1,0 +1,53 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <!-- Via Jinja, I will put the name of the category here in the title -->
+    <h2>Active Listings for CATEGORY NAME</h2>
+
+    <!-- DEBUGGING MESSAGE -->
+    {{products_in_selected_category}}
+
+
+<!--    {% for listing in listings %}-->
+<!--        &lt;!&ndash; This will make the home page to only display the active listings &ndash;&gt;-->
+<!--        {% if listing.active == True %}-->
+<!--&lt;!&ndash;            <li>&ndash;&gt;-->
+<!--&lt;!&ndash;                {{listing.product_name}}, ${{listing.initial_price}}, {{listing.description}}&ndash;&gt;-->
+
+<!--&lt;!&ndash;            </li>&ndash;&gt;-->
+
+<!--            &lt;!&ndash; This displays the listing's photo &ndash;&gt;-->
+<!--&lt;!&ndash;            <img src="{{listing.picture_url}}" height="100px">&ndash;&gt;-->
+
+<!--            &lt;!&ndash; Bootstrap's "Horizontal" card class (source: https://getbootstrap.com/docs/4.4/components/card/) &ndash;&gt;-->
+<!--            <div class="card mb-3" style="max-width: 50rem;">-->
+
+<!--                &lt;!&ndash; I will edit the link so that the user gets redirected to a page that shows the information-->
+<!--                 for that particular listing &ndash;&gt;-->
+<!--                <a href="listing/{{listing.id}}" style="text-decoration: none; color: inherit;">-->
+<!--                  <div class="row no-gutters">-->
+<!--                    <div class="col-md-4">-->
+<!--                      &lt;!&ndash; This displays the listing's photo &ndash;&gt;-->
+<!--                      <img src="{{listing.picture_url}}" class="card-img" alt="{{listing.product_name}}'s picture"-->
+<!--                      height="200rem">-->
+<!--                    </div>-->
+<!--                    <div class="col-md-8">-->
+<!--                      <div class="card-body">-->
+<!--                        <h5 class="card-title">{{listing.product_name}}</h5>    &lt;!&ndash; Product title &ndash;&gt;-->
+<!--                          <p class="card-text">   &lt;!&ndash; Price &ndash;&gt;-->
+<!--                            <b>Price:</b> ${{listing.initial_price}}-->
+<!--                          </p>-->
+<!--                        <p class="card-text">   &lt;!&ndash; Product description &ndash;&gt;-->
+<!--                            {{listing.description}}-->
+<!--                        </p>-->
+<!--                        <p class="card-text"> &lt;!&ndash; Date when the listing was created &ndash;&gt;-->
+<!--                            <small class="text-muted">Created on: {{listing.created_on}}</small>-->
+<!--                        </p>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        {% endif %}-->
+<!--    {% endfor %}-->
+{% endblock %}
