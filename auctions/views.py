@@ -952,3 +952,23 @@ def watchlist(request):
         "watchlist_products": watchlist_products,
         "active_products": active_products,
     })
+
+""" This is the view for the Categories page. 
+
+For question 6 in general, I will need to create 2 pages: one for displaying all of the categories, and one for 
+displaying all of the active listings for a specific category. For now, I will create the page that will only display 
+the name of all categories.
+
+So, since I need to create a new page, I need to create a view, a URL, and an HTML file.
+
+Everyone will be able to access the categories page, even if they’re not logged.
+
+"""
+def categories(request):
+
+    # This will store all the categories from the Categories table
+    category_list = "The categories will be displayed here."
+
+    return render(request, "auctions/categories.html", {
+        "category_list": category_list,
+    })

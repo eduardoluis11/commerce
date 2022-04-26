@@ -21,6 +21,11 @@
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
 
+            <!-- Link to the "Categories" page -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'categories' %}">Categories</a>
+            </li>
+
             {% if user.is_authenticated %}
 
                 <!-- This adds a link to all the closed auctions -->
