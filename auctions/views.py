@@ -898,15 +898,35 @@ products from the watchlist of the user that’s currently logged in.
 The first thing that I need to do is to create the page that will display the Watchlists. I need to create the html 
 file for the page. I will also have to include in the layout of the site (in layout.html) a link to the watchlists 
 page, which will only be accessible users who have logged in. I will also need to add a link to the page in urls.py to 
-the Watchlist page. Additionally, I will need to create a view function to display the watchlist.
+the Watchlist page. Additionally, I will need to create a view function to display the watchlist. This needs to be 
+done in the watchlist() view.
+	
+First, I need to store an instance of the user’s watchlist. This is done with Query Set’s get() function. Turns out I 
+can't do this since each time that an user adds something to a watchlist, a new entry is created on the Watchlist 
+table. So, I will have to use Query Set's filter() function, not get(). 
+
+I will need to store all of the listing IDs from that watchlist into a variable, to have all of the products inside 
+that particular watchlist in a single variable. Then, I will send that variable via Jinja to the watchlist page. 
+Afterwards, I will use a “for” loop to print each element of that variable, which corresponds to every item in 
+that person’s watchlist. 
 
 """
 @login_required
 def watchlist(request):
+
+    logged_user = request.user  # Instance of the user that's logged in
+    logged_user_id = logged_user.id  # ID of the user that's logged in
+
+    # Instance of the logged user's watchlist
+    # watchlist_instance = Watchlists.objects.get(user=logged_user)
+
+    # This gets all the products inside the currently logged user's watchlist
+    watchlist_products = Watchlists.objects.values_list('product_id', flat=True).filter(user=logged_user_id)
+
     # watchlist_products = Watchlists.objects.filter()
 
     # DEBUGGING message: this is just to display the page
-    watchlist_products = "This is your watchlist."
+    # watchlist_products = "This is your watchlist."
 
 
     return render(request, "auctions/watchlist.html", {

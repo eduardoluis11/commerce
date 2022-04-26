@@ -3,7 +3,11 @@
 {% block body %}
     <h2>Your Watchlist</h2>
 
-<!--    {% for listing in listings %}-->
+    <!-- This will print every product within the logged user's watchlist -->
+    {% for product in watchlist_products %}
+        {{product}}
+        <br>
+    {% endfor %}
 
 <!--        &lt;!&ndash; This will make the home page to only display the listings from closed auctions &ndash;&gt;-->
 <!--        {% if listing.active == False %}-->
@@ -36,5 +40,5 @@
 <!--                </a>-->
 <!--            </div>-->
 <!--        {% endif %}-->
-<!--    {% endfor %}-->
+
 {% endblock %}
