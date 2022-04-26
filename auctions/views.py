@@ -989,12 +989,20 @@ The page that shows all of the active listings for a specific category will be r
 (the Active Listings page.) In fact, it will be the same, except that it will only display the listings that belong to 
 a specific category.
 
+To obtain the specific category that the user typed or clicked, and check to which category that belongs in the 
+database, I need to use the get() function from Query Set, and check that the ID is the same as the one typed as a 
+parameter in the URL.
+
 """
 def category_listings(request, category_id):
+
+    # This will obtain the current category from the Categories table
+    current_category_instance = Categories.objects.get(id=category_id)
 
     # This will store all the active listings for the current category
     products_in_selected_category = "This will display all of the listings for the current category."
 
     return render(request, "auctions/category_listings.html", {
+        "current_category_instance": current_category_instance,
         "products_in_selected_category": products_in_selected_category,
     })

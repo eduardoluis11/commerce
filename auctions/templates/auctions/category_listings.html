@@ -2,7 +2,7 @@
 
 {% block body %}
     <!-- Via Jinja, I will put the name of the category here in the title -->
-    <h2>Active Listings for CATEGORY NAME</h2>
+    <h2>Active Listings for {{current_category_instance.category}}</h2>
 
     <!-- DEBUGGING MESSAGE -->
     {{products_in_selected_category}}
