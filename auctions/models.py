@@ -166,6 +166,15 @@ I need to make the picture URL and the category columns to be optional in te Lis
 any new listings from the Django panel if I don’t add any URL or text to any of those 2 columns. I can make a column 
 to be optional if I use the property “blank=True” (source: Rohan’s reply on 
 https://stackoverflow.com/questions/16828315/how-can-i-make-my-model-fields-optional-in-django .)
+
+BUG: I can’t add any listings from the Django admin panel, since I get an error saying “AttributeError at 
+/admin/auctions/listings/add/. 'str' object has no attribute 'utcoffset'”. I think the problem may be the date field 
+from the Listings model (the “created_on” column). 
+
+It seems that, to fix the above bug, I need to use “auto_now_add=True” instead of the “default” property of the column 
+that contains a date (source: Carson Myers’ reply from 
+https://stackoverflow.com/questions/2771676/django-datetime-issues-default-datetime-now ) 
+
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -173,7 +182,7 @@ class Listings(models.Model):
     description = models.CharField(max_length=4500, default='')
     picture_url = models.CharField(max_length=2048, default='', blank=True)
     initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    created_on = models.DateTimeField(default='2022-01-01 1:00:00')
+    created_on = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=64, default='None', blank=True)
     active = models.BooleanField(default=False)
 
