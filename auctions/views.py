@@ -910,6 +910,15 @@ that particular watchlist in a single variable. Then, I will send that variable 
 Afterwards, I will use a “for” loop to print each element of that variable, which corresponds to every item in 
 that person’s watchlist. 
 
+That way, I’m getting the IDs of every product that belong to the logged user’s watchlist. Now that I have those IDs, 
+I could go to the watchlist() view, and create another “for” loop. In this case, I want to compare the IDs of every 
+product in the user’s watchlist to the product IDs from the Listings table. Then, if both IDs match, I will get that 
+all of the data from those products where a match occurred. This, way, I will get all of the data from each product. 
+Finally, I will send that to the watchlist.html page via Jinja, and print that information. 
+	
+The way that I’m going to print the information for each product in the user’s watchlist will be similar (if not the 
+same) as I printed every product in the “Active Listings” page.   
+
 """
 @login_required
 def watchlist(request):
@@ -920,8 +929,18 @@ def watchlist(request):
     # Instance of the logged user's watchlist
     # watchlist_instance = Watchlists.objects.get(user=logged_user)
 
-    # This gets all the products inside the currently logged user's watchlist
+    # This gets all the product IDs inside the currently logged user's watchlist
     watchlist_products = Watchlists.objects.values_list('product_id', flat=True).filter(user=logged_user_id)
+
+    # This gets all the info from all the products in the active listings
+    active_products = Listings.objects.filter(active=True)
+
+    # This will get all the data from each product ...
+    # for watchlist_product in watchlist_products:
+    #     for product in active_products:
+    #         if int(product.id) == int(watchlist_product):
+    #             pass
+
 
     # watchlist_products = Watchlists.objects.filter()
 
@@ -931,4 +950,5 @@ def watchlist(request):
 
     return render(request, "auctions/watchlist.html", {
         "watchlist_products": watchlist_products,
+        "active_products": active_products,
     })

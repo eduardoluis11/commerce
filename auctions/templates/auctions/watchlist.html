@@ -4,9 +4,18 @@
     <h2>Your Watchlist</h2>
 
     <!-- This will print every product within the logged user's watchlist -->
-    {% for product in watchlist_products %}
-        {{product}}
-        <br>
+    {% for watchlist_product in watchlist_products %}
+        {% for product in active_products %}
+            {% if product.id == watchlist_product %}
+                {{product.product_name}}
+
+                <br>
+            {% endif %}
+        {% endfor %}
+
+
+<!--        {{product}}-->
+<!--        <br>-->
     {% endfor %}
 
 <!--        &lt;!&ndash; This will make the home page to only display the listings from closed auctions &ndash;&gt;-->
