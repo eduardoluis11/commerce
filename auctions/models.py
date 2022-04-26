@@ -162,19 +162,23 @@ quotation marks disappear.
 To fix the item names on the dropdown menu (so that it doesn’t display “cateogyr object(1/2/3/4)”), I needed to add a 
 “__str__” snippet on the class that contains the Categories model, as Brian explained during the lecture.
 
+I need to make the picture URL and the category columns to be optional in te Listings model. Otherwise, I can’t add 
+any new listings from the Django panel if I don’t add any URL or text to any of those 2 columns. I can make a column 
+to be optional if I use the property “blank=True” (source: Rohan’s reply on 
+https://stackoverflow.com/questions/16828315/how-can-i-make-my-model-fields-optional-in-django .)
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
     product_name = models.CharField(max_length=128, default='Product Name')
     description = models.CharField(max_length=4500, default='')
-    picture_url = models.CharField(max_length=2048, default='')
+    picture_url = models.CharField(max_length=2048, default='', blank=True)
     initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     created_on = models.DateTimeField(default='2022-01-01 1:00:00')
-    category = models.CharField(max_length=64, default='None')
+    category = models.CharField(max_length=64, default='None', blank=True)
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.id}: {self.seller_id} to {self.active}"
+        return f"{self.id}: {self.product_name}"
 
 
 """ 1.b) Bids:
