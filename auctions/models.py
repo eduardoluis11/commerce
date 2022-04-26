@@ -178,7 +178,7 @@ class Listings(models.Model):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.id}: {self.product_name}"
+        return f"{self.product_name} - ID: {self.id}"
 
 
 """ 1.b) Bids:
@@ -262,6 +262,9 @@ class Bids(models.Model):
     bid = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     is_auction_winner = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.id}: ${self.bid} from {self.buyer} in {self.listing}"
+
 
 
 """ 1.c) Comments:
@@ -304,6 +307,8 @@ class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments_from_user", default=0)
     listing = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="comments_from_listing", default=0)
 
+    def __str__(self):
+        return f"{self.id}: {self.comment}"
 
 """ 1.d) Watchlist:
 
