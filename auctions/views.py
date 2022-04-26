@@ -963,11 +963,14 @@ So, since I need to create a new page, I need to create a view, a URL, and an HT
 
 Everyone will be able to access the categories page, even if they’re not logged.
 
+Now, I need to get all of the categories from the Categories table, and store them in a variable. That can be done 
+with Query Set’s filter() function, or with objects.all(), since I want all of the categories.
+ 
 """
 def categories(request):
 
     # This will store all the categories from the Categories table
-    category_list = "The categories will be displayed here."
+    category_list = Categories.objects.all()
 
     return render(request, "auctions/categories.html", {
         "category_list": category_list,

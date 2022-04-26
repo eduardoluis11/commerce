@@ -1,11 +1,13 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
     <h2>Categories</h2>
+    <br>
+    <br>
 
-    {{category_list}}
-
-<!--    {% for listing in listings %}-->
-
-<!--    {% endfor %}-->
+    <!-- This will print all the categories -->
+    {% for category in category_list %}
+        {{category}}
+        <br>
+    {% endfor %}
 
 {% endblock %}
