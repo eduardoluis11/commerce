@@ -4,9 +4,12 @@
     <br>
     <br>
 
-    <!-- This will print all the categories -->
+    <!-- This will print all the categories as links. It will also send the user to each category page if the user
+    clicks on each link. -->
     {% for category in category_list %}
-        {{category}}
+        <a href="categories/{{category.id}}">
+            {{category}}
+        </a>
         <br>
     {% endfor %}
 
