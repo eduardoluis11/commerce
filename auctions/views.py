@@ -993,14 +993,25 @@ To obtain the specific category that the user typed or clicked, and check to whi
 database, I need to use the get() function from Query Set, and check that the ID is the same as the one typed as a 
 parameter in the URL.
 
+Now, I need to obtain all of the products in the Listings table that meet two requirements: that are active, and that 
+belong to the category of the current page. To check that the two conditions are fulfilled, I could use an “if” 
+statement. The columns that I want to check from the Listings table are “category” and “active”. And, since I will be 
+obtaining multiple products, I will use Query Set’s filter() function. Now that I think about it, I can simply put the 
+conditions in the filter() function without needing to use an “if” statement.
+
 """
 def category_listings(request, category_id):
 
     # This will obtain the current category from the Categories table
     current_category_instance = Categories.objects.get(id=category_id)
 
+    # This stores the name of the current category
+    current_category_name = current_category_instance.category
+
     # This will store all the active listings for the current category
-    products_in_selected_category = "This will display all of the listings for the current category."
+    products_in_selected_category = Listings.objects.filter(category=current_category_name, active=True)
+
+
 
     return render(request, "auctions/category_listings.html", {
         "current_category_instance": current_category_instance,
