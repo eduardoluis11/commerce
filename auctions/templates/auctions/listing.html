@@ -54,7 +54,15 @@
         <h2>{{listing_data.product_name}}</h2>
 
         <p>   <!-- Price -->
-            <b>Current Bid:</b> ${{listing_data.initial_price}}
+
+            <!-- This will print the highest bid if there's at least 1 bid -->
+            {% if highest_bid_amount != '' %}
+                <b>Current Bid:</b> ${{highest_bid_amount}}
+
+            <!-- This will print the initial price if no one places a bid -->
+            {% else %}
+                <b>Current Bid:</b> ${{listing_data.initial_price}}
+            {% endif %}
         </p>
 
         <!-- Form that will get the buyer's bid. Only logged users other than the seller will be able to see it -->

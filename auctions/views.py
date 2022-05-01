@@ -629,6 +629,32 @@ while also accepting empty values (if nobody has bid for a particular product), 
 instance = variable.order_by(‘-column’).first() (source: Sasha Chedygov’s reply on  
 https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django .)
 
+BUG: Even if I delete a bid, a product will never return to its original price, and it won’t return to its previous 
+lower bid either. That is, if a product is worth $70, and someone bids $79 for it, even if I delete that bid, the 
+price will still charge you $79. It will never go back to its original $70 price. I need to fix this. 
+
+As to how to return to the original price if the bid deleted was the only bid, I will need to store the initial price 
+somewhere else in the database. For instance, I could create a new column called “current_price” for the Listings 
+table. That column will have the exact same value as “initial_price” if no one has bid for that product (or if all of 
+the bids for that product have been deleted.) However, I might have to delete and rebuild the database for this to 
+work properly.
+
+I need to look at the code from the display_listing() view to see where I’m getting the current price of the product 
+that I’m displaying on a product page. I need that price to be equal to the highest bid stored in the database.
+
+The problem may be the line “<b>Current Bid:</b> ${{listing_data.initial_price}}”. I shouldn’t take the price of the 
+bid from the initial_price column from the Listings table. I need to take the max value for the “bid” column for 
+the Bids table.
+
+I could create a condition saying that, if there are no bids, display the price stored in “initial_price”. I will 
+modify my code so that initial_price is never modified (so that I could always get the initial price if I delete all 
+of the bids.) But, if there are bids, that the price that should be displayed should be the max value for the “bid” 
+column from the Bids table.
+
+To detect if there’s at least a bid, there are multiple ways. I could say that, if the variable that stores the highest 
+bid amount is not empty, that the current bid displayed on the page should be the variable that contains the highest 
+bid. Otherwise, I should display the price stored in “current_price”.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -679,6 +705,9 @@ def display_listing(request, listing_id):
     # This declares the variable that will store the victory message for the winner of an auction
     victory_message = ''
 
+    # This is the declaration of the variable that will display the amount for the highest bid
+    highest_bid_amount = ''
+
     # This takes the highest bidder from the Bids model
     highest_bidder_id = "No one has bid for this listing yet."
     if number_of_bids > 0:
@@ -695,6 +724,9 @@ def display_listing(request, listing_id):
 
         # This stores the name of the highest bidder
         highest_bidder_id = highest_bid_instance.buyer
+
+        # This stores the highest bid as a price amount
+        highest_bid_amount = highest_bid_instance.bid
 
         # This will print the name of an auction's winner
         if highest_bid_instance.is_auction_winner:
@@ -909,6 +941,7 @@ def display_listing(request, listing_id):
         "victory_message": victory_message,
         "comment_form": comment_form,
         "current_listing_comments": current_listing_comments,
+        "highest_bid_amount": highest_bid_amount
         # "logged_user_username": logged_user_username
         # "users_products_in_watchlist": users_products_in_watchlist
     })
