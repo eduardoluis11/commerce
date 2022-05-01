@@ -871,7 +871,7 @@ def display_listing(request, listing_id):
                         insert_bid_into_bids_table.save()  # This saves the entry into the database
 
                         # This modifies the price of the product on the Listings table
-                        Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+                        # Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
 
                     # If the current bid is the same as the previous bid, I'll show an error message
                     elif float(submitted_bid) == float(current_product_price):
@@ -893,7 +893,7 @@ def display_listing(request, listing_id):
                     insert_bid_into_bids_table.save()  # This saves the entry into the database
 
                     # This modifies the price of the product on the Listings table
-                    Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+                    # Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
 
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:
