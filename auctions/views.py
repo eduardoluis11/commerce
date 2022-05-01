@@ -4,6 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
+# This will let me find the max value from a list of database entries
+from django.db.models import Max
+
 """ This will let me obtain the current date and time whenever I create a listing (source: 
 https://pythonguides.com/how-to-get-current-time-in-django/ )
 """
@@ -614,6 +617,18 @@ to do that, I will need to modify the display_listing() view to be able to get t
 store them on the database. THEN I will send the comments via Jinja to the current product page (the listing.html 
 file.)
 
+BUG: If I edit a bid from the admin panel, and then I enter into that product’s page on the web app, I get the 
+following error: “DoesNotExist at /listing/3. Bids matching query does not exist.” I think that happens because I’m 
+getting the bid by using a query by the amount of money, not from the bid’s ID. I need to fix that. 
+
+To fix the above bug, I will fix my code so that, to look for the highest bid, I will use a function that gets the 
+maximum value out of all of the bids for a particular product. I can do that by importing a library called “Max”. Then, 
+I will obtain all of the bids for a particular product using filter(). After that, I will get the max bid value by 
+using the following function: aggregate(Max(‘column’)). Finally, to get the instance of the bid with the highest value, 
+while also accepting empty values (if nobody has bid for a particular product), I will use the following snippet: 
+instance = variable.order_by(‘-column’).first() (source: Sasha Chedygov’s reply on  
+https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django .)
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -668,8 +683,15 @@ def display_listing(request, listing_id):
     highest_bidder_id = "No one has bid for this listing yet."
     if number_of_bids > 0:
 
-        # This stores an instance of a bid where the amount bid is equal to the price displayed on the product page
-        highest_bid_instance = Bids.objects.get(bid=current_product_price)
+        # This stores an instance of a bid where the amount bid is equal to the price displayed on the product page ...
+        # highest_bid_instance = Bids.objects.get(bid=current_product_price)
+
+        # This obtains all the bids for the current product
+        all_bids_for_current_product = Bids.objects.filter(listing=listing_id)
+
+        # This obtains the instance of the highest bid
+        highest_bid_instance = all_bids_for_current_product.order_by('-bid').first()
+
 
         # This stores the name of the highest bidder
         highest_bidder_id = highest_bid_instance.buyer
