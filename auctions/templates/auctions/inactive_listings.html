@@ -5,7 +5,10 @@
 
     {% for listing in listings %}
 
-        <!-- This will make the home page to only display the listings from closed auctions -->
+        <!-- This will make the home page to only display the listings from closed auctions.
+
+        I modified the price since I'm now obtaining its price from the current_price column. The
+        initial_price column now only stores the initial price. -->
         {% if listing.active == False %}
 
             <div class="card mb-3" style="max-width: 50rem;">
@@ -22,7 +25,7 @@
                       <div class="card-body">
                         <h5 class="card-title">{{listing.product_name}}</h5>    <!-- Product title -->
                           <p class="card-text">   <!-- Price -->
-                            <b>Price:</b> ${{listing.initial_price}}
+                            <b>Price:</b> ${{listing.current_price}}
                           </p>
                         <p class="card-text">   <!-- Product description -->
                             {{listing.description}}
