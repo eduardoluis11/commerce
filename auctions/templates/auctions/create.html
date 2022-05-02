@@ -4,6 +4,11 @@
 
     <h2>Create a New Listing</h2>
 
+    <!-- This prints a confirmation message if the user creates a listing -->
+    {% if listing_creation_confirmation_message != '' %}
+        <p style="color: green;">{{listing_creation_confirmation_message}}</p>
+    {% endif %}
+
     <!-- Source of the form template: https://docs.djangoproject.com/en/4.0/topics/forms/ .
 
     According to Brian, I need to put the " url 'page_link' " syntax inside of "action". -->

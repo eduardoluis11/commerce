@@ -317,6 +317,9 @@ def create(request):
     # This creates an instance of the User table, which I'll need to use in the Query Set syntax
     user_instance = User.objects.get(id=logged_user_id)
 
+    # This will be a confirmation message
+    listing_creation_confirmation_message = ''
+
 
     if request.method == "POST":
         listing_title = request.POST["listing_title"]
@@ -350,9 +353,13 @@ def create(request):
         # This inserts the new listing into the database
         new_listing.save()
 
+        # This prints a confirmation message that tells the user that the listing was created
+        listing_creation_confirmation_message = 'Your listing was successfully created!'
+
         return render(request, "auctions/create.html", {
             "form": form,
-            "listings": Listings.objects.all()
+            "listings": Listings.objects.all(),
+            "listing_creation_confirmation_message": listing_creation_confirmation_message
         })
 
     else:
