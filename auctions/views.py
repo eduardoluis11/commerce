@@ -67,17 +67,38 @@ could use notation like the following:
 max_variable = Table.objects.aggregate(Max('column'))['column__max'] 
 (source: afahim’s reply on https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django )
 
+I will transform the price array into a dictionary or associative array. In that dictionary, I will store the ID of the 
+product, and its respective price. Then on the index.html file, I will compare the product ID from the Listings table, 
+and the product ID of the prices dictionary. If they are both the same, I will print the price for the current 
+iteration of the “for” loop. That way, each product will only have one price printed. 
+
+To create a dictionary in Python, I need to use the following notation: 
+Dictionary = {'Attribute_1': 'Value_1', 'Attribute_2': 'Value_2'}
+(source: https://www.geeksforgeeks.org/python-dictionary/ )
+
+Creating a dictionary and appending to a dictionary is a bit different than for lists or regular arrays. When declaring 
+the dictionary, I need to also declare the keys (‘ID’, ‘Price’, etc.) Then for appending values for a dictionary, I 
+need to append each value for each key separately. For instance:
+dictionary["Key_1"].append("Value_1")
+dictionary["Key_2"].append("Value_2")
+(source: https://www.guru99.com/python-dictionary-append.html#2 )
+
 """
 def index(request):
 
     # This stores all the active products
     listings = Listings.objects.filter(active=True)
 
+    # This stores all the bids
+    products_with_bids = Bids.objects.all
+
     # This is the declaration of the variable that will display the amount for the highest bid
     highest_bid_amount = ''
 
-    # This array will store all the price amounts for each product
-    price_amounts_for_all_products = []
+    # This dictionary will store all the price amounts and the ID for each product
+    price_amounts = []
+
+    # price_amounts = {"ID": [],"Price": []}
 
     # This will store the price for each product in the array that stores the prices
     for product in listings:
@@ -91,16 +112,21 @@ def index(request):
         # This checks if the product has any bids
         if highest_bid_amount is not None:
             # This inserts the highest bid for the current product in the prices array
-            price_amounts_for_all_products.append(highest_bid_amount)
+            price_amounts.append(highest_bid_amount)
+            # price_amounts["ID"].append(product.id)
+            # price_amounts["Price"].append(highest_bid_amount)
 
         # If the product doesn't have any bids, I will print its initial price
         else:
-            price_amounts_for_all_products.append(product.initial_price)
+            price_amounts.append(product.initial_price)
+            # price_amounts["ID"].append(product.id)
+            # price_amounts["Price"].append(product.initial_price)
 
 
     return render(request, "auctions/index.html", {
         "listings": listings,
-        "price_amounts_for_all_products": price_amounts_for_all_products,
+        "price_amounts": price_amounts,
+        "products_with_bids": products_with_bids
         # "highest_bid_amount": highest_bid_amount,
     })
 
@@ -268,6 +294,7 @@ the “created_on” variable, that is, inside of each listings’ entry.
 It seems that I need to import a Python library called “datetime”, and then I need to use this snippet on the views.py 
 file: “datetime.now()” (source: https://pythonguides.com/how-to-get-current-time-in-django/ .)
 
+I will specify that the initial price for the current_price column will be the same as in the initial_price column.
 """
 @login_required
 def create(request):
@@ -305,8 +332,9 @@ def create(request):
 
         # This prepares the new listing data before inserting it into the database
         new_listing = Listings(seller_id=user_instance, product_name=listing_title,
-                               description=description, initial_price=starting_bid, picture_url=picture_url, 
-                               category=category_formatted, created_on=current_date_and_time, active = True)
+                               description=description, initial_price=starting_bid, current_price=starting_bid,
+                               picture_url=picture_url, category=category_formatted, created_on=current_date_and_time,
+                               active = True)
 
         # This inserts the new listing into the database
         new_listing.save()
@@ -933,7 +961,7 @@ def display_listing(request, listing_id):
                         insert_bid_into_bids_table.save()  # This saves the entry into the database
 
                         # This modifies the price of the product on the Listings table
-                        # Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+                        Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
 
                     # If the current bid is the same as the previous bid, I'll show an error message
                     elif float(submitted_bid) == float(current_product_price):
@@ -955,7 +983,7 @@ def display_listing(request, listing_id):
                     insert_bid_into_bids_table.save()  # This saves the entry into the database
 
                     # This modifies the price of the product on the Listings table
-                    # Listings.objects.filter(pk=listing_id).update(initial_price=submitted_bid)
+                    Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
 
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:

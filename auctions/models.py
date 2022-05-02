@@ -175,6 +175,13 @@ It seems that, to fix the above bug, I need to use “auto_now_add=True” inste
 that contains a date (source: Carson Myers’ reply from 
 https://stackoverflow.com/questions/2771676/django-datetime-issues-default-datetime-now ) 
 
+I will have to create a new column for the Listings table, which will store the current modified price of the product. 
+It will be called “current_listing”. I will remove the comments of the Query Sets that updated the initial_price 
+column, but, instead of modifying the initial_price column, they will modify the current_price column. Then, I will 
+add an extra condition in display_listing, index.html, and wherever saying that, if a product doesn’t have any bids, 
+that current_price should be modified to be the same as initial_price. That should be done with an update() function 
+through a Query Set statement in the index(), inactive_listings() and display_listing() views.
+
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -182,6 +189,7 @@ class Listings(models.Model):
     description = models.CharField(max_length=4500, default='')
     picture_url = models.CharField(max_length=2048, default='', blank=True)
     initial_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    current_price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     created_on = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=64, default='None', blank=True)
     active = models.BooleanField(default=False)

@@ -72,6 +72,14 @@
 	Now, I need to update the links on the home page so that, when the user clicks on a listing, the will be taken to
 	the information page to that particular listing.
 
+	How to print key, value pairs in Django: I need to use the following notation:
+    {% for key, value in dictionary_variable.items %}
+      {{key}}: {{value}}
+    {% endfor %}
+    (source: russian_spy’s reply from
+    https://stackoverflow.com/questions/1275735/how-to-access-a-dictionary-element-in-a-django-template )
+
+
      -->
     {% for listing in listings %}
         <!-- This will make the home page to only display the active listings -->
@@ -117,8 +125,33 @@
     {% endfor %}
 
     <!-- DEBUGGING Prices. This shouldn't display any bugs. -->
-    {% for price in price_amounts_for_all_products %}
-        {{price}}
-        <br>
+    {% for listing in listings %}
+            {% for product_with_bids in products_with_bids %}
+                {% if listing.id == product_with_bids.listing %}
+
+                {% endif %}
+            {% endfor %}
+
+
+
+    {% endfor %}
+<!--    {% for key, value in price_amounts.items %}-->
+<!--        {{key}}: {{value}}-->
+<!--        <br>-->
+<!--        <br>-->
+        <!-- This prints '61' -->
+<!--        {{price_amounts.Price.0}}-->
+
+        <!-- This prints all prices with the word 'Decimal(price)' -->
+<!--            {{price_amounts.Price}}-->
+        <!-- This prints '3' -->
+<!--        {{price_amounts.ID.0}}-->
+
+        <!-- This will print every ID individually from the array that's stored in the key "ID" from the prices
+        dictionary -->
+<!--        {% for price in price_amounts.ID %}-->
+<!--            {{price}}-->
+<!--            <br>-->
+<!--        {% endfor %}-->
     {% endfor %}
 {% endblock %}
