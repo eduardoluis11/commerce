@@ -36,10 +36,72 @@ or sell a product.
 I need to send all of the resulting data into index.html, NOT to create.html. I want to display the listings on 
 the home page, NOT on the page for creating a new listing. So, I’ll need to specify that on the views.py file.
 
+BUG: The prices aren’t being updated properly on the Active Listings nor in the Closed Auctions pages.
+
+To solve this, I need to put the same Jinja code that I put on listings.html on index.html. Also note that I will need 
+to copy and paste the code that gets the highest bid from the display_listing() view into the index() view. I also need 
+to add the variables that will get the bids from the database so I can send them over Jinja to index.html.
+
+I will have to do the same in the inactive_listings() view and the inactive.html file.
+	
+I have a massive problem, which is that I need to get the number of bids for each of the products. So, I think I should 
+do like for the watchlists: create an array that will store all of the bids for each of the products during each 
+iteration of the “for” loop that will render each product. But even this could give me problems, since all of the 
+bids for all of the products would be stored in the same array, which would give me all kinds of problems.
+
+Another possible solution would be to either take either the highest bid amount or the initial price for a product from 
+the database, depending on the case.
+
+I think that the key for displaying the prices correctly in Active Listings is storing all of the price amounts in an 
+array. I will first declare an empty array. Then, I will create a “for” loop that will iterate every product that’s 
+active. Then, I will check if there’s at least one bid for the current product in the “for loop” (or check if it’s not 
+0 or not none. I don’t know how the max() function works.) If the current product in the loop has at least a bid, I 
+will append the maximum bid for that product in an array using the max() function. That will give me a number, not an 
+instance, so it will work. If that product doesn’t have at least a bid, or the max function returns 0 or None, I will 
+append the price from the initial_price column from the Listings table into the array.  
+
+Then, I will send that array via Jinja to the Active Listings page (index.html). Finally, I will create a “for” loop on the index.html file, and I will iterate every item of the price array in the HTML tag that has the “Current Bid” title. But, to avoid bugs, I need to get this loop and the “Current Bid” title out of the “for listing in listings” loop. Otherwise, it will print me more than once each price of each product. I will have to create twice the “for listing in listings” loop to prevent nesting the “for” loop that iterates the “price amount” array inside of the previous loop.
+
+To a number as a maximum value using Max(), I will have to use an associative array style of notation. For instance, I 
+could use notation like the following: 
+max_variable = Table.objects.aggregate(Max('column'))['column__max'] 
+(source: afahim’s reply on https://stackoverflow.com/questions/844591/how-to-do-select-max-in-django )
+
 """
 def index(request):
+
+    # This stores all the active products
+    listings = Listings.objects.filter(active=True)
+
+    # This is the declaration of the variable that will display the amount for the highest bid
+    highest_bid_amount = ''
+
+    # This array will store all the price amounts for each product
+    price_amounts_for_all_products = []
+
+    # This will store the price for each product in the array that stores the prices
+    for product in listings:
+
+        # This gets all the bids for the current product in the loop
+        bids_current_product = Bids.objects.filter(listing=product.id)
+
+        # This gets the highest bid for the current product in the loop
+        highest_bid_amount = bids_current_product.aggregate(Max('bid'))['bid__max']
+
+        # This checks if the product has any bids
+        if highest_bid_amount is not None:
+            # This inserts the highest bid for the current product in the prices array
+            price_amounts_for_all_products.append(highest_bid_amount)
+
+        # If the product doesn't have any bids, I will print its initial price
+        else:
+            price_amounts_for_all_products.append(product.initial_price)
+
+
     return render(request, "auctions/index.html", {
-        "listings": Listings.objects.all()
+        "listings": listings,
+        "price_amounts_for_all_products": price_amounts_for_all_products,
+        # "highest_bid_amount": highest_bid_amount,
     })
 
 """ This will display all of the closed auctions
@@ -47,7 +109,7 @@ def index(request):
 """
 def inactive_listings(request):
     return render(request, "auctions/inactive_listings.html", {
-        "listings": Listings.objects.all()
+        "listings": Listings.objects.all(),
     })
 
 

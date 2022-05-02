@@ -115,4 +115,10 @@
             </div>
         {% endif %}
     {% endfor %}
+
+    <!-- DEBUGGING Prices. This shouldn't display any bugs. -->
+    {% for price in price_amounts_for_all_products %}
+        {{price}}
+        <br>
+    {% endfor %}
 {% endblock %}
