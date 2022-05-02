@@ -141,6 +141,8 @@ def index(request):
 
 """ This will display all of the closed auctions
 
+Upon further consideration, I don’t have to touch or modify the inactive listings. So, I won’t modify its code for the 
+time being.
 """
 def inactive_listings(request):
     return render(request, "auctions/inactive_listings.html", {
