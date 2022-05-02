@@ -770,6 +770,14 @@ To fix the problem of the price not being updated in a product page when a user 
 whenever the user clicks on “submit”. To do that, I think I need to use an HttpResponseRedirect on the 
 display_listing() view.
 
+BUG: If I submit a bid that’s lower than the current bid, the web app will accept it, and no error message will be 
+displayed.
+
+To fix this bug, I think I need to change the variable that compares the amount in the current price, and the price on 
+the bid placed by the user. The variable that I’m currently using to compare both price amoutns is storing the price 
+stores in initial_price. Now that I have a new column called current_price to store the current bid, I need to modify 
+that variable. This is on the display_listing() page.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -796,8 +804,11 @@ def display_listing(request, listing_id):
     # Confirmation or error message for bids
     bid_message = ''
 
-    # This gets the price of the product of the current page
+    # This gets the initial price of the product of the current page
     current_product_price = current_listing_instance.initial_price
+
+    # This gets the real current price of the current product
+    real_current_product_price = current_listing_instance.current_price
 
     # This checks the number of bids that have been placed for the current product, if any
     number_of_bids = Bids.objects.filter(listing=listing_id).count()
@@ -973,13 +984,13 @@ def display_listing(request, listing_id):
             submitted_bid = request.POST["your_bid"]
 
             # This checks if the user placed a bid that's equal or higher than the price shown on the product page
-            if float(submitted_bid) >= float(current_product_price):
+            if float(submitted_bid) >= float(real_current_product_price):
 
                 # This checks if there's at least one bid in the Bids table
                 if number_of_bids > 0:
 
                     # This checks if the current bid is greater than the previous one
-                    if float(submitted_bid) > float(current_product_price):
+                    if float(submitted_bid) > float(real_current_product_price):
                         debugging_message_bid_button = "Good! Your bid is greater than the one placed by someone else."
 
                         bid_message = "Your bid has been successfully registered!"
@@ -996,7 +1007,7 @@ def display_listing(request, listing_id):
                         return HttpResponseRedirect(f"/listing/{listing_id}")
 
                     # If the current bid is the same as the previous bid, I'll show an error message
-                    elif float(submitted_bid) == float(current_product_price):
+                    elif float(submitted_bid) == float(real_current_product_price):
                         debugging_message_bid_button = "Sorry, but you need to place a bid that's higher than the previous one."
 
                         # Error message
