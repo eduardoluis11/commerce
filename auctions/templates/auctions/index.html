@@ -2,6 +2,13 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    <br>
+    <br>
+
+    <!-- This prints a message confirming that the user placed a bid (source: https://youtu.be/8kBo91L8JTY) -->
+    {% for msg in messages %}
+        <p style="color: green;">{{msg}}</p>
+    {% endfor %}
 
     <!-- 3) Active Listings Page:
 

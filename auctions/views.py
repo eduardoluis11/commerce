@@ -1,11 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+
+# I want to use the "redirect" function (source: https://youtu.be/8kBo91L8JTY )
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 # This will let me find the max value from a list of database entries
 from django.db.models import Max
+
+# This imports flash messages (source: https://youtu.be/8kBo91L8JTY )
+from django.contrib import messages
 
 """ This will let me obtain the current date and time whenever I create a listing (source: 
 https://pythonguides.com/how-to-get-current-time-in-django/ )
@@ -778,6 +783,14 @@ the bid placed by the user. The variable that I’m currently using to compare b
 stores in initial_price. Now that I have a new column called current_price to store the current bid, I need to modify 
 that variable. This is on the display_listing() page.
 
+Since I can’t seem to show the confirmation message if a user successfully places a bid, and instantaneously update the 
+price of the product in the product page, what I’ll do is redirect the user to the home page whenever they place a 
+successful bid, and then show them a success flash message. To do that, I will use a function called “redirect(/)” to 
+redirect users to the home page after placing as successful bid. Then, by importing a flash message function, I will 
+store a confirmation message (source: https://youtu.be/8kBo91L8JTY ). That way, the product page will have enough time 
+to update the price of the product to which the user just bid. Also, they’ll be able to see a confirmation message 
+telling them that their bid has been placed. 
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -1004,7 +1017,11 @@ def display_listing(request, listing_id):
                         Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
 
                         # This will reload the current page, so that the price changes without having to exit the page
-                        return HttpResponseRedirect(f"/listing/{listing_id}")
+                        # return HttpResponseRedirect(f"/listing/{listing_id}")
+
+                        # This will redirect the user to the home page
+                        messages.success(request, "Your bid has been successfully registered!")
+                        return redirect('/')
 
                     # If the current bid is the same as the previous bid, I'll show an error message
                     elif float(submitted_bid) == float(real_current_product_price):
