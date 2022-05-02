@@ -108,7 +108,7 @@
                       <div class="card-body">
                         <h5 class="card-title">{{listing.product_name}}</h5>    <!-- Product title -->
                           <p class="card-text">   <!-- Price -->
-                            <b>Price:</b> ${{listing.initial_price}}
+                            <b>Price:</b> ${{listing.current_price}}
                           </p>
                         <p class="card-text">   <!-- Product description -->
                             {{listing.description}}
@@ -125,16 +125,16 @@
     {% endfor %}
 
     <!-- DEBUGGING Prices. This shouldn't display any bugs. -->
-    {% for listing in listings %}
-            {% for product_with_bids in products_with_bids %}
-                {% if listing.id == product_with_bids.listing %}
+<!--    {% for listing in listings %}-->
+<!--            {% for product_with_bids in products_with_bids %}-->
+<!--                {% if listing.id == product_with_bids.listing %}-->
 
-                {% endif %}
-            {% endfor %}
+<!--                {% endif %}-->
+<!--            {% endfor %}-->
 
 
 
-    {% endfor %}
+<!--    {% endfor %}-->
 <!--    {% for key, value in price_amounts.items %}-->
 <!--        {{key}}: {{value}}-->
 <!--        <br>-->
@@ -153,5 +153,5 @@
 <!--            {{price}}-->
 <!--            <br>-->
 <!--        {% endfor %}-->
-    {% endfor %}
+<!--    {% endfor %}-->
 {% endblock %}
