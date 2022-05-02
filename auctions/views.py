@@ -745,6 +745,9 @@ To detect if there’s at least a bid, there are multiple ways. I could say that
 bid amount is not empty, that the current bid displayed on the page should be the variable that contains the highest 
 bid. Otherwise, I should display the price stored in “current_price”.
 
+If the number of bids goes back to 0 (like, if I delete all bids for a particular product), I will reset the 
+current_price column back to the same value as initial_price, so that the product returns to its initial price.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -821,6 +824,10 @@ def display_listing(request, listing_id):
         # This will print the name of an auction's winner
         if highest_bid_instance.is_auction_winner:
             auction_winner_name = highest_bidder_id
+
+    # If there are no bids for the current product, I will set its price back to its initial price ...
+    elif number_of_bids == 0:
+        Listings.objects.filter(pk=listing_id).update(current_price=current_product_price)
 
 
         # This updates Bids table so that the highest bidder is inserted into the database 
@@ -1080,7 +1087,7 @@ def watchlist(request):
     # This gets all the info from all the products in the active listings
     active_products = Listings.objects.filter(active=True)
 
-    # This will get all the data from each product ...
+    # This will get all the data from each product
     # for watchlist_product in watchlist_products:
     #     for product in active_products:
     #         if int(product.id) == int(watchlist_product):
