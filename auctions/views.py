@@ -766,6 +766,10 @@ bid. Otherwise, I should display the price stored in “current_price”.
 If the number of bids goes back to 0 (like, if I delete all bids for a particular product), I will reset the 
 current_price column back to the same value as initial_price, so that the product returns to its initial price.
 
+To fix the problem of the price not being updated in a product page when a user places a bid, I will refresh the page 
+whenever the user clicks on “submit”. To do that, I think I need to use an HttpResponseRedirect on the 
+display_listing() view.
+
 """
 def display_listing(request, listing_id):
     # This obtains the listing that I want to display as iterable objects
@@ -988,6 +992,9 @@ def display_listing(request, listing_id):
                         # This modifies the price of the product on the Listings table
                         Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
 
+                        # This will reload the current page, so that the price changes without having to exit the page
+                        return HttpResponseRedirect(f"/listing/{listing_id}")
+
                     # If the current bid is the same as the previous bid, I'll show an error message
                     elif float(submitted_bid) == float(current_product_price):
                         debugging_message_bid_button = "Sorry, but you need to place a bid that's higher than the previous one."
@@ -1009,6 +1016,9 @@ def display_listing(request, listing_id):
 
                     # This modifies the price of the product on the Listings table
                     Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
+
+                    # This will reload the current page
+                    return HttpResponseRedirect(f"/listing/{listing_id}")
 
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:
