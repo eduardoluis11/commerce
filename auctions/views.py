@@ -103,22 +103,31 @@ def index(request):
     # This will store the price for each product in the array that stores the prices
     for product in listings:
 
+        # This stores the initial price for the current product
+        initial_product_price = Listings.objects.values_list('initial_price', flat=True).filter(pk=product.id)
+
         # This gets all the bids for the current product in the loop
         bids_current_product = Bids.objects.filter(listing=product.id)
 
         # This gets the highest bid for the current product in the loop
         highest_bid_amount = bids_current_product.aggregate(Max('bid'))['bid__max']
 
-        # This checks if the product has any bids
+        # This executes if the product has any bids
         if highest_bid_amount is not None:
+
+            # This updates the database so that the current price is equal to the highest bid ...
+            Listings.objects.filter(pk=product.id).update(current_price=highest_bid_amount)
+
             # This inserts the highest bid for the current product in the prices array
-            price_amounts.append(highest_bid_amount)
+            # price_amounts.append(highest_bid_amount)
             # price_amounts["ID"].append(product.id)
             # price_amounts["Price"].append(highest_bid_amount)
 
-        # If the product doesn't have any bids, I will print its initial price
+        # If the product doesn't have any bids, I will update its price back to its initial price on the database
         else:
-            price_amounts.append(product.initial_price)
+            Listings.objects.filter(pk=product.id).update(current_price=initial_product_price)
+
+            # price_amounts.append(product.initial_price)
             # price_amounts["ID"].append(product.id)
             # price_amounts["Price"].append(product.initial_price)
 
