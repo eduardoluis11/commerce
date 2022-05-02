@@ -182,6 +182,12 @@ add an extra condition in display_listing, index.html, and wherever saying that,
 that current_price should be modified to be the same as initial_price. That should be done with an update() function 
 through a Query Set statement in the index(), inactive_listings() and display_listing() views.
 
+To fix the problem of the extra “s” letters appearing at the end of each table on the admin panel I will need to add an 
+extra class on each model called “Meta”. Then I will have to use the following notation inside that class:
+verbose_name_plural = "table_name_as_I_want_it"
+(source: Abhyudit Jain’s reply from  
+https://stackoverflow.com/questions/32047686/how-can-i-remove-extra-s-from-django-admin-panel .)
+
 """
 class Listings(models.Model):
     seller_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_of_products", default=0)
@@ -197,6 +203,8 @@ class Listings(models.Model):
     def __str__(self):
         return f"{self.product_name} - ID: {self.id}"
 
+    class Meta:
+        verbose_name_plural = "Listings"
 
 """ 1.b) Bids:
 
@@ -282,7 +290,8 @@ class Bids(models.Model):
     def __str__(self):
         return f"{self.id}: ${self.bid} from {self.buyer} in {self.listing}"
 
-
+    class Meta:
+        verbose_name_plural = "Bids"
 
 """ 1.c) Comments:
 Since comments on a listing in my web app will be the equivalent of comments in a blog entry, I decided to look up 
@@ -326,6 +335,9 @@ class Comments(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.comment}"
+
+    class Meta:
+        verbose_name_plural = "Comments"
 
 """ 1.d) Watchlist:
 
@@ -395,3 +407,6 @@ class Categories(models.Model):
     # This will change the dropdown menu items from "category object (1/2)" to the actual category name
     def __str__(self):
         return f"{self.category}"
+
+    class Meta:
+        verbose_name_plural = "Categories"
