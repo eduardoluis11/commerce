@@ -1019,7 +1019,7 @@ def display_listing(request, listing_id):
                         # This will reload the current page, so that the price changes without having to exit the page
                         # return HttpResponseRedirect(f"/listing/{listing_id}")
 
-                        # This will redirect the user to the home page
+                        # This will redirect the user to the home page and show them a confirmation message
                         messages.success(request, "Your bid has been successfully registered!")
                         return redirect('/')
 
@@ -1046,7 +1046,11 @@ def display_listing(request, listing_id):
                     Listings.objects.filter(pk=listing_id).update(current_price=submitted_bid)
 
                     # This will reload the current page
-                    return HttpResponseRedirect(f"/listing/{listing_id}")
+                    # return HttpResponseRedirect(f"/listing/{listing_id}")
+
+                    # This will redirect the user to the home page and show them a confirmation message
+                    messages.success(request, "Your bid has been successfully registered!")
+                    return redirect('/')
 
             # This tells the user that they need to place a bid that's at least as high as the one displayed on the page
             else:
