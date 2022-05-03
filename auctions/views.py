@@ -922,8 +922,8 @@ def display_listing(request, listing_id):
                 # This stores the winner of the auction
                 # auction_winner_name = highest_bidder_id
 
-                # This updates Bids table so that the highest bidder is inserted into the database 
-                Bids.objects.filter(bid=current_product_price).update(is_auction_winner=True)
+                # This updates Bids table so that the highest bidder is inserted into the database
+                Bids.objects.filter(bid=real_current_product_price).update(is_auction_winner=True)
 
         # This will check if somebody won the current auction
         if auction_winner_name != "Nobody has won the auction yet.":
