@@ -3,7 +3,7 @@
 
 Author of the code: Eduardo Salinas
 
-## Special Instructions:
+## Special Instruction:
 
 You won't be able to assign a category to any product on any listing if there are no categories in the database. 
 Since I'm not providing the database (since the instructions tell me that the only files and folders allowed
